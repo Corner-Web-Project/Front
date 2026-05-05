@@ -1,3 +1,5 @@
+
+
 export default function Nav(){
   return(
     <nav>
@@ -7,7 +9,7 @@ export default function Nav(){
       <span>Project</span>
       <span>Notice</span>
       <span>Join</span>
-      <span>Log In</span>
+      <span className="border-4">Log In</span>
     </nav>
   )
 }
