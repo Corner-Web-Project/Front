@@ -1,7 +1,7 @@
 export default function Nav(){
   return(
     <nav>
-      <h1><img src="" alt="" /></h1>
+      <span><h1><img src="" alt="" /></h1></span>
       <span>About Us</span>
       <span>Schedule</span>
       <span>Project</span>
