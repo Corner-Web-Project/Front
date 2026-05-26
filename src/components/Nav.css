@@ -1,0 +1,8 @@
+.menu-container{
+    display:flex;
+    gap:30px;
+    margin-Left:250px;
+    align-items:center;
+    color:#014BAA;
+    font-size:25px;
+}
