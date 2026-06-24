@@ -1,6 +1,6 @@
 export default function Home() {
   return (
-    <main>
+    <main className="">
       <h1>Main Pages</h1>
       <h1>김치우</h1>
       <h1>김보민😋</h1>
