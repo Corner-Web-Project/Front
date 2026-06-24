@@ -9,35 +9,35 @@ export default function Nav(){
         <NavLink to="/"
           className={({ isActive }) => 
             `transition duration-250 ease-linear mr-[2.24vw] group flex items-end overflow-hidden
-            ${isActive ? '  hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium'}
+            ${isActive ? 'border-b-1 hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium hover:border-b-1'}
             `
           }>About Us</NavLink>
         <NavLink 
           to="/Schedule" 
           className={({ isActive }) => 
             `transition duration-250 ease-linear mr-[2.24vw]
-            ${isActive ? 'hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium'}
+            ${isActive ? 'border-b-1 hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium hover:border-b-1'}
             `
           }>Schedule</NavLink>
         <NavLink 
           to="/Project" 
           className={({ isActive }) => 
             `transition duration-250 ease-linear mr-[2.24vw]
-            ${isActive ? 'hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium'}
+            ${isActive ? 'border-b-1 hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium hover:border-b-1'}
             `
           }>Project</NavLink>
         <NavLink 
           to="/Notice" 
           className={({ isActive }) => 
             `transition duration-250 ease-linear mr-[2.24vw]
-            ${isActive ? 'hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium'}
+            ${isActive ? 'border-b-1 hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium hover:border-b-1'}
             `
           }>Notice</NavLink>
         <NavLink 
           to="/Join" 
           className={({ isActive }) => 
             `transition duration-250 ease-linear
-            ${isActive ? 'hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium'}
+            ${isActive ? 'border-b-1 hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium hover:border-b-1'}
             `
           }>Join</NavLink>
       </div>
@@ -46,7 +46,7 @@ export default function Nav(){
         to="/SignIn" 
         className={({ isActive }) => 
           `transition duration-250 ease-linear 
-          ${isActive ? 'hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium'}
+          ${isActive ? 'border-b-1 hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium hover:border-b-1'}
           `
         }>SignIn</NavLink>
     </nav>
