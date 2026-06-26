@@ -1,11 +1,22 @@
 export default function Home() {
   return (
     <main className="">
-      <h1>Main Pages</h1>
-      <h1>김치우</h1>
-      <h1>김보민😋</h1>
-      <h1>이진리</h1>
-      <h1>오성민</h1>
+      <section className="flex justify-center">
+        <div className="w-[500px] h-[350px] bg-[#D9D9D9]"></div>
+        <br />
+      </section>
+
+      <section className="flex justify-center h-[350px]">
+        <div>
+          logo
+        </div>
+      </section>
+
+      <section className="">
+        <h2 className="text-center text-[#014BAA] text-3xl">
+          PEOPLE
+        </h2>
+      </section>
     </main>
   )
 }
