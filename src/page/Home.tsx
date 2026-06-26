@@ -9,6 +9,8 @@ export default function Home() {
       <section className="flex justify-center h-[350px]">
         <div>
           logo
+          <br />
+          경상국립대학교 컴퓨터공학과 응용 소프트웨어 개발실
         </div>
       </section>
 
