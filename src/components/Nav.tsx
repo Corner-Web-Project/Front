@@ -2,7 +2,7 @@ import { Link, NavLink } from 'react-router';
 
 export default function Nav(){
   return(
-    <nav className='w-full h-[80px] flex justify-around items-center text-[1.35vw] text-[rgba(1,75,170,0.73)] '>
+    <nav className='w-full h-[80px] flex justify-around items-center text-[1.05vw] text-[rgba(1,75,170,0.73)] '>
       <Link to="/" className='w-[8.4vw] transition duration-300 ease-linear hover:scale-110 '><img className='' src="/mainLogo.svg" alt="" /></Link>
 
       <div className="w-1/3 flex justify-evenly mr-32">
