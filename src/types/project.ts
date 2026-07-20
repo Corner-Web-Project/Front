@@ -3,7 +3,7 @@ export interface Member{
     name: string;
 }
 
-export interface project{
+export interface Project{
     generation: string;
     subtitle: string;
     title:string;

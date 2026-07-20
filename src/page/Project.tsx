@@ -1,13 +1,13 @@
 import { useState } from "react";
 
-import { Project, Member } from "../types/project";
+import type { Project, Member } from "../types/project";
 
-// import GenerationSelect from "../components/GenerationSelect";
-// import ProjectInfo from "../components/ProjectInfo";
-// import ImageUpload from "../components/ImageUpload";
-// import Description from "../components/Description";
-// import MemberList from "../components/MemberList";
-// import SubmitButton from "../components/SubmitButton";
+import GenerationSelect from "../components/GenerationSelect";
+import ProjectInfo from "../components/ProjectInfo";
+import ImageUpload from "../components/ImageUpload";
+import Description from "../components/Description";
+import MemberList from "../components/MemberList";
+import SubmitButton from "../components/SubmitButton";
 
 export default function Project() {
   const [project, setProject] = useState<Project>({
