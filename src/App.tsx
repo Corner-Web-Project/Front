@@ -15,20 +15,24 @@ import Footer from './page/Footer.tsx'
 
 export default function App() {
   return (
-    <>
+    <div className="mit-h-screen flex flex-col">
       <Header />
-      <Routes>
-        <Route path='/' element={<Home/>} />
-        <Route path='/Schedule' element={<Schedule/>} />
-        <Route path='/Project' element={<Project/>} />
-        <Route path='/Notice' element={<Notice/>} />
-        <Route path='/Join' element={<Join/>} />
-        <Route path='/SignIn' element={<SignIn/>} />
-        <Route path='/SignIn/FindID' element={<FindId/>} />
-        <Route path='/not-found' element={<NotFound/>} />
-        <Route path='*' element={<Navigate to='/not-found' />} />
-      </Routes>
+
+      <main className="flex-1">
+        <Routes>
+          <Route path='/' element={<Home/>} />
+          <Route path='/Schedule' element={<Schedule/>} />
+          <Route path='/Project' element={<Project/>} />
+          <Route path='/Notice' element={<Notice/>} />
+          <Route path='/Join' element={<Join/>} />
+          <Route path='/SignIn' element={<SignIn/>} />
+          <Route path='/SignIn/FindID' element={<FindId/>} />
+          <Route path='/not-found' element={<NotFound/>} />
+          <Route path='*' element={<Navigate to='/not-found' />} />
+        </Routes>
+      </main>
+
       <Footer/>
-    </>
-  )
+    </div>
+  );
 }
