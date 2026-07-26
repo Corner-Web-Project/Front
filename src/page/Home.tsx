@@ -231,7 +231,7 @@ export default function Home() {
       <section>
         <h2 className="text-center text-3xl text-[#014BAA]">PEOPLE</h2>
 
-        <div className="mx-auto mt-35 grid max-w-6xl grid-cols-3 justify-items-center gap-x-8 gap-y-20">
+        <div className="mx-auto mt-35 grid max-w-6xl grid-cols-3 justify-items-center gap-x-8 gap-y-20 mb-60">
           <div className="flex flex-col items-center">
             <img src={cat1} className="h-35 w-35 rounded-full" />
             <div className="mt-4 w-30 rounded-xl border border-[#014BAA] bg-[#ECEAE9] p-1 text-center text-[#014BAA]">
