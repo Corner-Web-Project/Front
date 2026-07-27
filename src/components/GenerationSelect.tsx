@@ -1,15 +1,15 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { Project } from "../types/project";
+import type { Projectup } from "../types/projectup";
 interface GenerationSelectProps {
   generation: string;
-  setProject: Dispatch<SetStateAction<Project>>;
+  setProjectup: Dispatch<SetStateAction<Projectup>>;
 }
 
 const generations = ["1기", "2기", "3기", "4기"];
 
 export default function GenerationSelect({
   generation,
-  setProject,
+  setProjectup,
 }: GenerationSelectProps) {
   return (
     <div className="flex flex-col gap-2">
@@ -23,7 +23,7 @@ export default function GenerationSelect({
             key={item}
             type="button"
             onClick={() =>
-              setProject((prev) => ({
+              setProjectup((prev) => ({
                 ...prev,
                 generation: item,
               }))

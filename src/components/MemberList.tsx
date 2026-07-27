@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 
-import type { Member } from "../types/project";
+import type { Member } from "../types/projectup";
 import Input from "./Input";
 interface MemberListProps {
   members: Member[];

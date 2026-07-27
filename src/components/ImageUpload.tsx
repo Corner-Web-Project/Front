@@ -1,14 +1,14 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { Project } from "../types/project";
+import type { Projectup } from "../types/projectup";
 
 interface ImageUploadProps {
-  project: Project;
-  setProject: Dispatch<SetStateAction<Project>>;
+  projectup: Projectup;
+  setProjectup: Dispatch<SetStateAction<Projectup>>;
 }
 
 export default function ImageUpload({
-  project,
-  setProject,
+  projectup,
+  setProjectup,
 }: ImageUploadProps) {
   return (
     <div className="grid grid-cols-2 gap-5">
@@ -23,16 +23,16 @@ export default function ImageUpload({
           type="file"
           accept="image/*"
           onChange={(e) =>
-            setProject((prev) => ({
+            setProjectup((prev) => ({
               ...prev,
               logo: e.target.files?.[0] ?? null,
             }))
           }
         />
 
-        {project.logo && (
+        {projectup.logo && (
           <img
-            src={URL.createObjectURL(project.logo)}
+            src={URL.createObjectURL(projectup.logo)}
             className="h-32 rounded-xl object-cover"
           />
         )}
@@ -49,16 +49,16 @@ export default function ImageUpload({
           type="file"
           accept="image/*"
           onChange={(e) =>
-            setProject((prev) => ({
+            setProjectup((prev) => ({
               ...prev,
               banner: e.target.files?.[0] ?? null,
             }))
           }
         />
 
-        {project.banner && (
+        {projectup.banner && (
           <img
-            src={URL.createObjectURL(project.banner)}
+            src={URL.createObjectURL(projectup.banner)}
             className="h-32 rounded-xl object-cover"
           />
         )}

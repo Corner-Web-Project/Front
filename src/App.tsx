@@ -1,10 +1,11 @@
-import { Route, Routes } from 'react-router'
-import { Navigate } from 'react-router'
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import Header from './page/Header.tsx'
 import Home from './page/Home.tsx'
 import Schedule from './page/Schedule.tsx'
+import Projectup from './page/Projectup.tsx'
 import Project from './page/Project.tsx'
+import ProjectDetail from "./page/ProjectDetail";
 import Notice from './page/Notice.tsx'
 import Join from './page/Join.tsx'
 import SignIn from './page/SignIn.tsx'
@@ -22,7 +23,9 @@ export default function App() {
         <Routes>
           <Route path='/' element={<Home/>} />
           <Route path='/Schedule' element={<Schedule/>} />
-          <Route path='/Project' element={<Project/>} />
+          <Route path='/Projectup' element={<Projectup/>} />
+          <Route path='/Project' element={<Project/>}/>
+          <Route path='/Project/:id' element={<ProjectDetail />} />
           <Route path='/Notice' element={<Notice/>} />
           <Route path='/Join' element={<Join/>} />
           <Route path='/SignIn' element={<SignIn/>} />

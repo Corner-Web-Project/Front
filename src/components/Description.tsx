@@ -1,14 +1,14 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { Project } from "../types/project";
+import type { Projectup } from "../types/projectup";
 
 interface DescriptionProps {
-  project: Project;
-  setProject: Dispatch<SetStateAction<Project>>;
+  projectup: Projectup;
+  setProjectup: Dispatch<SetStateAction<Projectup>>;
 }
 
 export default function Description({
-  project,
-  setProject,
+  projectup,
+  setProjectup,
 }: DescriptionProps) {
   return (
     <div className="flex flex-col gap-2">
@@ -18,10 +18,10 @@ export default function Description({
 
       <textarea
         rows={6}
-        value={project.description}
+        value={projectup.description}
         placeholder="프로젝트에 대해 자세히 설명해주세요."
         onChange={(e) =>
-          setProject((prev) => ({
+          setProjectup((prev) => ({
             ...prev,
             description: e.target.value,
           }))

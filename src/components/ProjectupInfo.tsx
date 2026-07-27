@@ -1,15 +1,15 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { Project } from "../types/project";
+import type { Projectup } from "../types/projectup";
 import Input from "./Input";
-interface ProjectInfoProps {
-  project: Project;
-  setProject: Dispatch<SetStateAction<Project>>;
+interface ProjectupInfoProps {
+  projectup: Projectup;
+  setProjectup: Dispatch<SetStateAction<Projectup>>;
 }
 
-export default function ProjectInfo({
-  project,
-  setProject,
-}: ProjectInfoProps) {
+export default function ProjectupInfo({
+  projectup,
+  setProjectup,
+}: ProjectupInfoProps) {
   return (
     <div className="flex flex-col gap-5">
 
@@ -19,10 +19,10 @@ export default function ProjectInfo({
         </label>
 
         <Input
-          value={project.title}
+          value={projectup.title}
           placeholder="프로젝트 이름"
           onChange={(e) =>
-            setProject((prev) => ({
+            setProjectup((prev) => ({
               ...prev,
               title: e.target.value,
             }))
@@ -37,10 +37,10 @@ export default function ProjectInfo({
         </label>
 
         <Input
-          value={project.subtitle}
+          value={projectup.subtitle}
           placeholder="프로젝트를 한 줄로 소개해주세요."
           onChange={(e) =>
-            setProject((prev) => ({
+            setProjectup((prev) => ({
               ...prev,
               subtitle: e.target.value,
             }))
