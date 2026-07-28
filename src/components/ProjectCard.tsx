@@ -11,12 +11,11 @@ export default function ProjectCard({
 }: ProjectCardProps) {
   return (
     <Link to={`/project/${project.id}`}>
-  <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:shadow-lg">
-
+  <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-[#014BAA]">
     <img
       src={project.banner}
       alt={project.title}
-      className="h-48 w-full object-cover"
+      className="aspect-video w-full object-cover"
     />
 
     <div className="p-5">
@@ -31,11 +30,11 @@ export default function ProjectCard({
 
         <div>
 
-          <h2 className="text-xl font-bold">
+          <h2 className="text-2xl font-bold text-[#014BAA]">
             {project.title}
           </h2>
 
-          <p className="text-sm text-gray-500">
+          <p className="mt-1 text-gray-500">
             {project.subtitle}
           </p>
 

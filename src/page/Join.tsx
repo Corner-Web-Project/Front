@@ -69,7 +69,7 @@ export default function Join() {
 
             <h2
               onClick={() => setIsWriting(false)}
-              className="w-full px-8 py-4 bg-[#014BAA] text-white rounded-xl cursor-pointer"
+              className="w-full px-8 py-4 bg-[#014BAA] text-white rounded-xl cursor-pointer transition-colors duration-200 hover:bg-[#003882]"
             >
               🐱 신청하러 가기
             </h2>
@@ -80,7 +80,7 @@ export default function Join() {
 
       ) : (
 
-        <div className="w-[400px] bg-white p-8 rounded-xl shadow-md">
+        <div className="w-[600px] bg-white p-8 rounded-xl shadow-md">
 
           <h2 className="text-xl font-bold mb-6">
             📋 신청서 작성
@@ -121,14 +121,18 @@ export default function Join() {
             />
 
             <FormItem
+              textarea
               label="지원동기"
               placeholder="지원동기를 입력하세요."
+              
               required
               value={reason}
               onChange={(e) => setReason(e.target.value)}
+              
             />
 
             <FormItem
+              textarea
               label="하고 싶은 말"
               placeholder="자유롭게 작성해주세요."
               value={comment}
@@ -142,7 +146,7 @@ export default function Join() {
             <button
               type="button"
               onClick={() => setIsWriting(true)}
-              className="w-1/3 bg-gray-100 p-3 rounded-xl"
+              className="w-1/3 bg-gray-100 p-3 rounded-xl transition-colors duration-200 hover:bg-[#e3e2e2]"
             >
               이전으로
             </button>
@@ -150,7 +154,7 @@ export default function Join() {
             <button
               type="button"
               onClick={handleSubmit}
-              className="w-2/3 bg-[#014BAA] text-white p-3 rounded-xl"
+              className="w-2/3 bg-[#014BAA] text-white p-3 rounded-xl transition-colors duration-200 hover:bg-[#003882]"
             >
               제출하기
             </button>

@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import ScrollToTop from "./components/ScrollToTop";
 import Header from './page/Header.tsx'
 import Home from './page/Home.tsx'
 import Schedule from './page/Schedule.tsx'
@@ -18,6 +19,7 @@ export default function App() {
   return (
     <div className="mit-h-screen flex flex-col">
       <Header />
+      <ScrollToTop />
 
       <main className="flex-1">
         <Routes>

@@ -16,7 +16,7 @@ export const projectData: Project[] = [
     members: [
       {
         role: "Frontend",
-        name: "홍길동",
+        name: "짱구",
       },
       {
         role: "Backend",
@@ -40,7 +40,7 @@ export const projectData: Project[] = [
     members: [
       {
         role: "Frontend",
-        name: "이영희",
+        name: "피카츄",
       },
     ],
   },

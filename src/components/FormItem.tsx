@@ -6,7 +6,11 @@ interface FormItemProps {
   required?: boolean;
 
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (
+  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) => void;
+
+  textarea?: boolean;
 }
 
 export default function FormItem({
@@ -14,7 +18,8 @@ export default function FormItem({
   placeholder,
   required = false,
   value,
-  onChange
+  onChange,
+  textarea,
 }: FormItemProps) {
 
   return (
@@ -32,12 +37,22 @@ export default function FormItem({
 
       </div>
 
-      <Input
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className="w-full border border-gray-300 rounded-lg p-3"
-      />
+      {textarea ? (
+        <textarea
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          rows={5}
+          className="w-full rounded-lg border border-gray-300 p-3 outline-none resize-none focus:border-[#014BAA]"
+        />
+      ) : (
+        <Input
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className="w-full rounded-lg border border-gray-300 p-3 outline-none focus:border-[#014BAA]"
+        />
+      )}
 
     </div>
   );
