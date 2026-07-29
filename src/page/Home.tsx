@@ -8,6 +8,7 @@ import cat6 from "../assets/home/cat6.png";
 import cat7 from "../assets/home/cat7.png";
 import cat8 from "../assets/home/cat8.png";
 import cat9 from "../assets/home/cat9.png";
+import githubLogo from "../assets/home/githubLogo.png";
 
 export default function Home() {
   const [displayText, setDisplayText] = useState("");
@@ -236,8 +237,11 @@ export default function Home() {
             <img src={cat1} className="h-35 w-35 rounded-full" />
             <div className="mt-4 w-30 rounded-xl border border-[#014BAA] bg-[#ECEAE9] p-1 text-center text-[#014BAA]">
               <p>실장 김용환</p>
-              <br />
-              <p>github logo</p>
+              <img
+                src={githubLogo}
+                alt="GitHub"
+                className="mx-auto mt-3 h-6 w-6"
+              />
             </div>
           </div>
 
@@ -245,8 +249,11 @@ export default function Home() {
             <img src={cat2} className="h-35 w-35 rounded-full" />
             <div className="mt-4 w-30 rounded-xl border border-[#014BAA] bg-[#ECEAE9] p-1 text-center text-[#014BAA]">
               <p>실원 변경태</p>
-              <br />
-              <p>github logo</p>
+              <img
+                src={githubLogo}
+                alt="GitHub"
+                className="mx-auto mt-3 h-6 w-6"
+              />
             </div>
           </div>
 
@@ -254,8 +261,11 @@ export default function Home() {
             <img src={cat3} className="h-35 w-35 rounded-full" />
             <div className="mt-4 w-30 rounded-xl border border-[#014BAA] bg-[#ECEAE9] p-1 text-center text-[#014BAA]">
               <p>실원 홍종민</p>
-              <br />
-              <p>github logo</p>
+              <img
+                src={githubLogo}
+                alt="GitHub"
+                className="mx-auto mt-3 h-6 w-6"
+              />
             </div>
           </div>
 
@@ -263,8 +273,11 @@ export default function Home() {
             <img src={cat4} className="h-35 w-35 rounded-full" />
             <div className="mt-4 w-30 rounded-xl border border-[#014BAA] bg-[#ECEAE9] p-1 text-center text-[#014BAA]">
               <p>실원 박건우</p>
-              <br />
-              <p>github logo</p>
+              <img
+                src={githubLogo}
+                alt="GitHub"
+                className="mx-auto mt-3 h-6 w-6"
+              />
             </div>
           </div>
 
@@ -272,8 +285,11 @@ export default function Home() {
             <img src={cat5} className="h-35 w-35 rounded-full" />
             <div className="mt-4 w-30 rounded-xl border border-[#014BAA] bg-[#ECEAE9] p-1 text-center text-[#014BAA]">
               <p>실원 박성우</p>
-              <br />
-              <p>github logo</p>
+              <img
+                src={githubLogo}
+                alt="GitHub"
+                className="mx-auto mt-3 h-6 w-6"
+              />
             </div>
           </div>
 
@@ -281,8 +297,11 @@ export default function Home() {
             <img src={cat6} className="h-35 w-35 rounded-full" />
             <div className="mt-4 w-30 rounded-xl border border-[#014BAA] bg-[#ECEAE9] p-1 text-center text-[#014BAA]">
               <p>실원 김치우</p>
-              <br />
-              <p>github logo</p>
+              <img
+                src={githubLogo}
+                alt="GitHub"
+                className="mx-auto mt-3 h-6 w-6"
+              />
             </div>
           </div>
 
@@ -290,8 +309,11 @@ export default function Home() {
             <img src={cat7} className="h-35 w-35 rounded-full" />
             <div className="mt-4 w-30 rounded-xl border border-[#014BAA] bg-[#ECEAE9] p-1 text-center text-[#014BAA]">
               <p>실원 김보민</p>
-              <br />
-              <p>github logo</p>
+              <img
+                src={githubLogo}
+                alt="GitHub"
+                className="mx-auto mt-3 h-6 w-6"
+              />
             </div>
           </div>
 
@@ -299,8 +321,11 @@ export default function Home() {
             <img src={cat8} className="h-35 w-35 rounded-full" />
             <div className="mt-4 w-30 rounded-xl border border-[#014BAA] bg-[#ECEAE9] p-1 text-center text-[#014BAA]">
               <p>실원 오성민</p>
-              <br />
-              <p>github logo</p>
+              <img
+                src={githubLogo}
+                alt="GitHub"
+                className="mx-auto mt-3 h-6 w-6"
+              />
             </div>
           </div>
 
@@ -308,8 +333,11 @@ export default function Home() {
             <img src={cat9} className="h-35 w-35 rounded-full" />
             <div className="mt-4 w-30 rounded-xl border border-[#014BAA] bg-[#ECEAE9] p-1 text-center text-[#014BAA]">
               <p>실원 이진리</p>
-              <br />
-              <p>github logo</p>
+              <img
+                src={githubLogo}
+                alt="GitHub"
+                className="mx-auto mt-3 h-6 w-6"
+              />
             </div>
           </div>
         </div>
