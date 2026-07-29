@@ -8,6 +8,8 @@ import Projectup from './page/Projectup.tsx'
 import Project from './page/Project.tsx'
 import ProjectDetail from "./page/ProjectDetail";
 import Notice from './page/Notice.tsx'
+import NoticeDetail from './page/NoticeDetail.tsx'
+import NoticeWrite from './page/NoticeWrite.tsx'
 import Join from './page/Join.tsx'
 import SignIn from './page/SignIn.tsx'
 import FindId from './page/FindId.tsx'
@@ -29,6 +31,8 @@ export default function App() {
           <Route path='/Project' element={<Project/>}/>
           <Route path='/Project/:id' element={<ProjectDetail />} />
           <Route path='/Notice' element={<Notice/>} />
+          <Route path='/Notice/write' element={<NoticeWrite/>} />
+          <Route path='/Notice/:id' element={<NoticeDetail/>} />
           <Route path='/Join' element={<Join/>} />
           <Route path='/SignIn' element={<SignIn/>} />
           <Route path='/SignIn/FindID' element={<FindId/>} />

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Pencil } from 'lucide-react'; // 글쓰기 버튼 아이콘용
 import { DUMMY_POSTS, type Post } from '../types/types';
 
 type CategoryFilter = '전체' | '공지사항' | 'FAQ' | '질문';
 
 const NoticePage: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('전체');
   const [posts] = useState<Post[]>(DUMMY_POSTS);
 
@@ -28,7 +30,7 @@ const NoticePage: React.FC = () => {
   };
 
   const handleWriteClick = () => {
-    alert('글쓰기 페이지로 이동하거나 모달을 띄웁니다.');
+    navigate('/Notice/write');
   };
 
   return (
@@ -78,14 +80,18 @@ const NoticePage: React.FC = () => {
                 </tr>
               ) : (
                 filteredPosts.map((post) => (
-                  <tr key={post.id} className="border-b border-gray-200 text-sm hover:bg-gray-50/50 transition">
+                  <tr
+                    key={post.id}
+                    onClick={() => navigate(`/Notice/${post.id}`)}
+                    className="border-b border-gray-200 text-sm hover:bg-gray-50/50 transition cursor-pointer"
+                  >
                     <td className="py-4 text-center text-[#9CA3AF]">{post.no}</td>
                     <td className="py-4 text-center">
                       <span className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-semibold tracking-wide ${getCategoryBadgeStyle(post.category)}`}>
                         {post.category}
                       </span>
                     </td>
-                    <td className="py-4 pl-4 font-medium text-[#1F2937] cursor-pointer hover:text-blue-600 transition">
+                    <td className="py-4 pl-4 font-medium text-[#1F2937] hover:text-blue-600 transition">
                       {post.title}
                     </td>
                     <td className="py-4 text-center text-[#D1D5DB] text-xs font-light">{post.author}</td>
