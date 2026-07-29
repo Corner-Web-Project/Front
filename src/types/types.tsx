@@ -14,7 +14,7 @@ export interface Post {
 export const DUMMY_POSTS: Post[] = [
   {
     id: '1',
-    no: '-',
+    no: '003',
     category: '공지사항',
     title: '2026학년도 구석방 1학기 정규 일정 안내',
     author: '운영진',
