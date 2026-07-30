@@ -16,9 +16,9 @@ export default function Project() {
         setSelectedGeneration={setSelectedGeneration}
       />
 
-      <h1 className="mb-10 text-4xl font-bold text-[#014BAA]">
+      {/* <h1 className="mb-10 text-4xl font-bold text-[#014BAA]">
         PROJECT
-      </h1>
+      </h1> */}
 
       <div className="grid grid-cols-2 gap-8">
 

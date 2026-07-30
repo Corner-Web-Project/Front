@@ -11,6 +11,24 @@ export default function Join() {
   const [phone, setPhone] = useState("");
   const [reason, setReason] = useState("");
   const [comment, setComment] = useState("");
+  const handlePhoneChange = (
+  e:
+    | React.ChangeEvent<HTMLInputElement>
+    | React.ChangeEvent<HTMLTextAreaElement>
+) => {
+  let value = e.target.value.replace(/\D/g, "");
+  
+
+  if (value.length < 4) {
+    setPhone(value);
+  } else if (value.length < 8) {
+    setPhone(`${value.slice(0, 3)}-${value.slice(3)}`);
+  } else {
+    setPhone(
+      `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`
+    );
+  }
+};
 
   const handleSubmit = () => {
     if (!name.trim()) {
@@ -67,12 +85,12 @@ export default function Join() {
 
             <div className="w-full h-[1px] bg-gray-200"></div>
 
-            <h2
+            <button
               onClick={() => setIsWriting(false)}
-              className="w-full px-8 py-4 bg-[#014BAA] text-white rounded-xl cursor-pointer transition-colors duration-200 hover:bg-[#003882]"
+              className="text-[#014BAA] font-semibold text-base cursor-pointer transition-colors duration-200 hover:text-[#003882] hover:underline underline-offset-4"
             >
-              🐱 신청하러 가기
-            </h2>
+              신청하러 가기
+            </button>
 
           </div>
 
@@ -112,13 +130,13 @@ export default function Join() {
               onChange={(e) => setMajor(e.target.value)}
             />
 
-            <FormItem
-              label="전화번호"
-              placeholder="010-0000-0000"
-              required
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
+           <FormItem
+            label="전화번호"
+            placeholder="010-0000-0000"
+            required
+            value={phone}
+            onChange={handlePhoneChange}
+/>
 
             <FormItem
               textarea

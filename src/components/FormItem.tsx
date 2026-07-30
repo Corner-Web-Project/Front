@@ -6,11 +6,15 @@ interface FormItemProps {
   required?: boolean;
 
   value: string;
+
   onChange: (
-  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-) => void;
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => void;
 
   textarea?: boolean;
+  maxLength?: number;
 }
 
 export default function FormItem({

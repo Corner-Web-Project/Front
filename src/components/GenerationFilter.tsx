@@ -1,44 +1,43 @@
-import type { Dispatch, SetStateAction } from "react";
-
-interface Props {
+interface GenerationFilterProps {
   selectedGeneration: string;
-  setSelectedGeneration: Dispatch<SetStateAction<string>>;
+  setSelectedGeneration: React.Dispatch<
+    React.SetStateAction<string>
+  >;
 }
 
-const generations = [
-  "1기",
-  "2기",
-  "3기",
-  "4기",
-];
+const generations = ["1기", "2기", "3기", "4기"];
 
 export default function GenerationFilter({
   selectedGeneration,
   setSelectedGeneration,
-}: Props) {
+}: GenerationFilterProps) {
   return (
-    <div className="mb-14 flex justify-center gap-8">
-
-      {generations.map((generation) => (
-
-        <button
-          key={generation}
-          onClick={() =>
-            setSelectedGeneration(generation)
-          }
-         className={`rounded-xl border border-[#014BAA] px-8 py-3 font-bold transition-all duration-300
-
-         ${
-            selectedGeneration === generation
-            ? "bg-[#014BAA] text-white scale-105 shadow-lg"
-            : "bg-white text-[#014BAA] hover:bg-[#014BAA] hover:text-white hover:scale-105 hover:shadow-lg"
-         }`}
-        >
-          {generation}
-        </button>
-
-      ))}
-
+    <div className="mb-10 flex justify-center border-b border-gray-200 pb-5">
+      <div className="flex gap-2">
+        {generations.map((generation) => (
+          <button
+            key={generation}
+            onClick={() => setSelectedGeneration(generation)}
+            className={`
+              rounded-full
+              px-5
+              py-2
+              text-sm
+              font-medium
+              transition-all
+              duration-200
+              shadow-sm
+              ${
+                selectedGeneration === generation
+                  ? "bg-[#3B82F6] text-white ring-2 ring-blue-200 scale-105"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-[#014BAA]"
+              }
+            `}
+          >
+            {generation}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

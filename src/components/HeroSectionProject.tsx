@@ -30,17 +30,17 @@ export default function HeroSection() {
           />
 
           <div>
-            <p className="text-xs md:text-sm tracking-wider text-[#014BAA]">
-              CORNER ROOM PROJECT
+            <p className="mt-1 text-2xl font-bold md:text-4xl text-[#014BAA]">
+               PROJECT
             </p>
 
             
-            <h1 className="mt-1 text-2xl font-bold md:text-4xl text-[#014BAA]">
+            {/* <h1 className="mt-1 text-2xl font-bold md:text-4xl text-[#014BAA]">
               구석방의 프로젝트
-            </h1>
+            </h1> */}
 
             <p className="mt-3 text-base md:mt-3 md:text-lg opacity-90 text-[#014BAA]">
-              구석방의 프로젝트를 소개합니다.
+             | 구석방의 프로젝트를 소개합니다.
             </p>
           </div>
 
