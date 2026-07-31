@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import FormItem from '../components/FormItem';
+import FormInput from "../components/FormInput";
+import FormTextarea from "../components/FormTextarea";
 
 export default function Join() {
   const [isWriting, setIsWriting] = useState<boolean>(true);
@@ -17,8 +18,6 @@ export default function Join() {
     | React.ChangeEvent<HTMLTextAreaElement>
 ) => {
   let value = e.target.value.replace(/\D/g, "");
-  
-
   if (value.length < 4) {
     setPhone(value);
   } else if (value.length < 8) {
@@ -28,6 +27,20 @@ export default function Join() {
       `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`
     );
   }
+};
+
+ const handleStudentId = (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  setStudentId(
+    e.target.value.replace(/\D/g, "")
+  );
+};
+
+ const handleNameChange = (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  setName(e.target.value.replace(/\d/g, ""));
 };
 
   const handleSubmit = () => {
@@ -106,23 +119,23 @@ export default function Join() {
 
           <form className="flex flex-col gap-5">
 
-            <FormItem
+            <FormInput
               label="이름"
               placeholder="홍길동"
               required
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={handleNameChange}
             />
 
-            <FormItem
+            <FormInput
               label="학번"
               placeholder="202612345"
               required
               value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-            />
+              onChange={handleStudentId}
+              />
 
-            <FormItem
+            <FormInput
               label="학과"
               placeholder="컴퓨터공학과"
               required
@@ -130,7 +143,7 @@ export default function Join() {
               onChange={(e) => setMajor(e.target.value)}
             />
 
-           <FormItem
+           <FormInput
             label="전화번호"
             placeholder="010-0000-0000"
             required
@@ -138,23 +151,21 @@ export default function Join() {
             onChange={handlePhoneChange}
 />
 
-            <FormItem
-              textarea
+            <FormTextarea
               label="지원동기"
               placeholder="지원동기를 입력하세요."
-              
               required
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              
+              maxLength={500}
             />
 
-            <FormItem
-              textarea
+            <FormTextarea
               label="하고 싶은 말"
               placeholder="자유롭게 작성해주세요."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
+              maxLength={300}
             />
 
           </form>
