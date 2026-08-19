@@ -33,25 +33,25 @@ export default function Schedule() {
                 <div className="schedule-header">
                     <div>
                         <h1>Schedule</h1>
-                        <p>Notion에서 관리하는 일정입니다.</p>
+                        <p>구석방에서 관리하는 멤버들의 일정입니다.</p>
                     </div>
                 </div>
 
                 <section className="calendar-wrapper">
                     <FullCalendar
-                        plugins={[dayGridPlugin]}
-                        initialView="dayGridMonth"
-                        events={events}
-                        height="auto"
-                        dayMaxEvents={3}
-                        headerToolbar={{
-                            left: "prev,next today",
-                            center: "title",
-                            right: "",
-                        }}
-                        buttonText={{
-                            today: "오늘",
-                        }}
+                      plugins={[dayGridPlugin]}
+                      initialView="dayGridMonth"
+                      events={events}
+                      height="auto"
+                      dayMaxEvents={3}
+                      headerToolbar={{
+                          left: "",
+                          center: "title",
+                          right: "prev,next today",
+                      }}
+                      buttonText={{
+                          today: "오늘",
+                      }}
                     />
                 </section>
 
