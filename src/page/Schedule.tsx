@@ -1,7 +1,61 @@
+import { useEffect, useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+
+import "../css/schedule.css";
+
+interface CalendarEvent {
+    id: string;
+    title: string;
+    start: string;
+    end?: string;
+}
+
 export default function Schedule() {
-  return (
-    <main>
-      <h1>Schedule Page</h1>
-    </main>
-  )
+    const [events, setEvents] = useState<CalendarEvent[]>([]);
+
+    useEffect(() => {
+        fetch("http://localhost:5001/api/calendar")
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("Notion 데이터:", data);
+                setEvents(data);
+            })
+            .catch((error) => {
+                console.error("캘린더 데이터 오류:", error);
+            });
+    }, []);
+
+    return (
+        <main className="schedule-page">
+            <div className="schedule-container">
+
+                <div className="schedule-header">
+                    <div>
+                        <h1>Schedule</h1>
+                        <p>Notion에서 관리하는 일정입니다.</p>
+                    </div>
+                </div>
+
+                <section className="calendar-wrapper">
+                    <FullCalendar
+                        plugins={[dayGridPlugin]}
+                        initialView="dayGridMonth"
+                        events={events}
+                        height="auto"
+                        dayMaxEvents={3}
+                        headerToolbar={{
+                            left: "prev,next today",
+                            center: "title",
+                            right: "",
+                        }}
+                        buttonText={{
+                            today: "오늘",
+                        }}
+                    />
+                </section>
+
+            </div>
+        </main>
+    );
 }
