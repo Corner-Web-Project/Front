@@ -9,10 +9,12 @@ interface CalendarEvent {
     title: string;
     start: string;
     end?: string;
+    allDay: boolean;
 }
 
 export default function Schedule() {
     const [events, setEvents] = useState<CalendarEvent[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetch("http://localhost:5001/api/calendar")
@@ -23,6 +25,9 @@ export default function Schedule() {
             })
             .catch((error) => {
                 console.error("캘린더 데이터 오류:", error);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }, []);
 
@@ -38,21 +43,27 @@ export default function Schedule() {
                 </div>
 
                 <section className="calendar-wrapper">
-                    <FullCalendar
-                      plugins={[dayGridPlugin]}
-                      initialView="dayGridMonth"
-                      events={events}
-                      height="auto"
-                      dayMaxEvents={3}
-                      headerToolbar={{
-                          left: "",
-                          center: "title",
-                          right: "prev,next today",
-                      }}
-                      buttonText={{
-                          today: "오늘",
-                      }}
-                    />
+                    {loading ? (
+                        <div className="calendar-loading">
+                            일정을 불러오는 중...
+                        </div>
+                    ) : (
+                        <FullCalendar
+                            plugins={[dayGridPlugin]}
+                            initialView="dayGridMonth"
+                            events={events}
+                            height="auto"
+                            dayMaxEvents={3}
+                            headerToolbar={{
+                                left: "",
+                                center: "title",
+                                right: "prev,next today",
+                            }}
+                            buttonText={{
+                                today: "오늘",
+                            }}
+                        />
+                    )}
                 </section>
 
             </div>
