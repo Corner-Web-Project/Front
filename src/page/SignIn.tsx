@@ -1,10 +1,13 @@
 import { useState } from "react"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import Input from "../components/Input"
-
+import { useAuth } from "../context/AuthContext"
 export default function SignIn() {
+
   const [id, setId] = useState("")
   const [pw, setPw] = useState("")
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -22,13 +25,35 @@ export default function SignIn() {
 
     const data = await response.json()
 
-    console.log(data)
-    
+    if (data.success) {
+      login(id)
+      navigate("/")
+    } else {
+      alert(data.message)
+    }
   }
 
   
   return (
-    <main className="w-full h-[93.9033695vh] flex justify-center items-center">
+    <main className="w-full h-[93.9033695vh] flex justify-center items-center gap-[8vw]">
+      <div className="w-[600px] text-[#014BAA] text-center flex flex-col items-center">
+        <p className="text-[40px] leading-[1.4]">
+          아직<br />
+          구석방에 가입하지 않았다면
+        </p>
+
+        <p className="mt-6 text-[18px] leading-[1.5]">
+          회원가입하고 더 자세한 소식<br />
+          알아갈 수 있습니다.
+        </p>
+
+        <Link
+          to="/SignUp"
+          className="mt-8 px-4 py-2 bg-[#014BAA] rounded-lg text-white text-sm transition duration-200 hover:scale-105"
+        >
+          회원가입
+        </Link>
+      </div>
       <div className="w-[600px] h-[500px] bg-[#BDDAFF] rounded-2xl drop-shadow-xl/30 flex flex-col items-center ">
         <div className="w-full h-[115px] flex justify-center items-center">
           <span className="text-[30px] text-[#014BAA]">Log In</span>

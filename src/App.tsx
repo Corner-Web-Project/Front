@@ -12,6 +12,7 @@ import NoticeDetail from './page/NoticeDetail.tsx'
 import NoticeWrite from './page/NoticeWrite.tsx'
 import Join from './page/Join.tsx'
 import SignIn from './page/SignIn.tsx'
+import SignUp from "./page/SignUp"
 import FindId from './page/FindId.tsx'
 import FindPw from './page/FindPw.tsx'
 import NotFound from './page/NotFound.tsx'
@@ -35,6 +36,7 @@ export default function App() {
           <Route path='/Notice/:id' element={<NoticeDetail/>} />
           <Route path='/Join' element={<Join/>} />
           <Route path='/SignIn' element={<SignIn/>} />
+          <Route path="/SignUp" element={<SignUp />} />
           <Route path='/SignIn/FindID' element={<FindId/>} />
           <Route path='/not-found' element={<NotFound/>} />
           <Route path='*' element={<Navigate to='/not-found' />} />
