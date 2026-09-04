@@ -11,6 +11,7 @@ export default function Join() {
   const [major, setMajor] = useState("");
   const [phone, setPhone] = useState("");
   const [reason, setReason] = useState("");
+  const [portfolio, setPortfolio] = useState("");
   const [comment, setComment] = useState("");
   const handlePhoneChange = (
   e:
@@ -158,6 +159,13 @@ export default function Join() {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               maxLength={500}
+            />
+
+            <FormTextarea
+              label="포트폴리오 / 활동 링크"
+              placeholder="GitHub, Blog, Notion 등 링크나 파일을 첨부해 주세요."
+              value={portfolio}
+              onChange={(e) => setPortfolio(e.target.value)}
             />
 
             <FormTextarea
