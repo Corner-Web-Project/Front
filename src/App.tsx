@@ -38,6 +38,7 @@ export default function App() {
           <Route path='/SignIn' element={<SignIn/>} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path='/SignIn/FindID' element={<FindId/>} />
+          <Route path='/SignIn/FindPW' element={<FindPw/>} />
           <Route path='/not-found' element={<NotFound/>} />
           <Route path='*' element={<Navigate to='/not-found' />} />
         </Routes>
