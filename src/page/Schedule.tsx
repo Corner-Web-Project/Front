@@ -17,7 +17,7 @@ export default function Schedule() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:5001/api/calendar")
+        fetch("http://localhost:8080/api/calendar")
             .then((res) => res.json())
             .then((data) => {
                 console.log("Notion 데이터:", data);
