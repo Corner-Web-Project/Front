@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { DUMMY_POSTS, type Post } from '../types/types';
+import { type Post } from '../types/types';
+import { getPost } from '../api/post';
 
 const getCategoryBadgeStyle = (category: Post['category']) => {
   switch (category) {
@@ -18,12 +20,40 @@ export default function NoticeDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const post = DUMMY_POSTS.find((item) => item.id === id);
+  const [result, setResult] = useState<{ id: string; post: Post | null; error: string } | null>(null);
+
+  useEffect(() => {
+    if (!id) return;
+    let ignore = false;
+    getPost(id)
+      .then((post) => {
+        if (!ignore) setResult({ id, post, error: '' });
+      })
+      .catch((e: Error) => {
+        if (!ignore) setResult({ id, post: null, error: e.message });
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [id]);
+
+  // 현재 id의 응답이 아직 안 왔으면 로딩 중
+  const loading = result?.id !== id;
+  const post = loading ? null : result?.post ?? null;
+  const error = (!loading && result?.error) || '';
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center text-sm text-gray-500">
+        불러오는 중...
+      </div>
+    );
+  }
 
   if (!post) {
     return (
       <div className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold text-[#333333]">게시글을 찾을 수 없습니다.</h1>
+        <h1 className="text-2xl font-bold text-[#333333]">{error || '게시글을 찾을 수 없습니다.'}</h1>
         <button
           onClick={() => navigate('/Notice')}
           className="px-4 py-2 rounded-full bg-[#3B82F6] text-white text-sm hover:bg-[#2563EB] transition"

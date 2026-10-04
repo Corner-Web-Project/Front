@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DUMMY_POSTS, type Post } from '../types/types';
+import { type Post } from '../types/types';
+import { createPost } from '../api/post';
 
 type Category = Post['category'];
 
@@ -11,8 +12,9 @@ export default function NoticeWrite() {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [content, setContent] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!title.trim() || !author.trim() || !content.trim()) {
@@ -20,23 +22,19 @@ export default function NoticeWrite() {
       return;
     }
 
-    const newPost: Post = {
-      id: String(Date.now()),
-      no: String(DUMMY_POSTS.length + 1).padStart(3, '0'),
-      category,
-      title: title.trim(),
-      author: author.trim(),
-      createdAt: new Date().toLocaleDateString('ko-KR', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      }),
-      paragraphs: content.split('\n').filter((line) => line.trim() !== ''),
-    };
-
-    DUMMY_POSTS.unshift(newPost);
-
-    navigate(`/Notice/${newPost.id}`);
+    setSubmitting(true);
+    try {
+      const id = await createPost({
+        category,
+        title: title.trim(),
+        author: author.trim(),
+        content: content.trim(),
+      });
+      navigate(`/Notice/${id}`);
+    } catch (error) {
+      alert((error as Error).message);
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -99,9 +97,10 @@ export default function NoticeWrite() {
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-full text-sm text-white bg-[#3B82F6] hover:bg-[#2563EB] transition"
+              disabled={submitting}
+              className="px-5 py-2.5 rounded-full text-sm text-white bg-[#3B82F6] hover:bg-[#2563EB] transition disabled:opacity-50"
             >
-              등록
+              {submitting ? '등록 중...' : '등록'}
             </button>
           </div>
         </form>
