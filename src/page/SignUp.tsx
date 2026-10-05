@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
+import { createMember } from "../api/member"
 
 export default function SignUp() {
   const [id, setId] = useState("")
@@ -10,7 +11,7 @@ export default function SignUp() {
 
   const navigate = useNavigate()
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (!id || !pw || !pwCheck || !name || !email) {
@@ -23,16 +24,13 @@ export default function SignUp() {
       return
     }
 
-    console.log({
-      id,
-      pw,
-      name,
-      email,
-    })
-
-    alert("회원가입이 완료되었습니다.")
-
-    navigate("/SignIn")
+    try {
+      await createMember({ studentId: id, password: pw, name, email })
+      alert("회원가입이 완료되었습니다.")
+      navigate("/SignIn")
+    } catch (error) {
+      alert((error as Error).message)
+    }
   }
 
   return (
