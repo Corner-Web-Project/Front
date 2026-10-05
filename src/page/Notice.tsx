@@ -1,19 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Pencil } from 'lucide-react'; // 글쓰기 버튼 아이콘용
-import { DUMMY_POSTS, type Post } from '../types/types';
+import { type Post } from '../types/types';
+import { getPosts } from '../api/post';
 
 type CategoryFilter = '전체' | '공지사항' | 'FAQ' | '질문';
 
 const NoticePage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('전체');
-  const [posts] = useState<Post[]>(DUMMY_POSTS);
+  const [result, setResult] = useState<{ category: CategoryFilter; posts: Post[]; error: string } | null>(null);
 
-  // 카테고리 필터링 로직
-  const filteredPosts = selectedCategory === '전체'
-    ? posts
-    : posts.filter(post => post.category === selectedCategory);
+  // 카테고리가 바뀔 때마다 API로 목록 조회 ('전체'면 카테고리 조건 없음)
+  useEffect(() => {
+    let ignore = false;
+    getPosts(selectedCategory === '전체' ? undefined : selectedCategory)
+      .then((posts) => {
+        if (!ignore) setResult({ category: selectedCategory, posts, error: '' });
+      })
+      .catch((e: Error) => {
+        if (!ignore) setResult({ category: selectedCategory, posts: [], error: e.message });
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [selectedCategory]);
+
+  // 선택한 카테고리의 응답이 아직 안 왔으면 로딩 중
+  const loading = result?.category !== selectedCategory;
+  const posts = (!loading && result?.posts) || [];
+  const error = (!loading && result?.error) || '';
 
   // 카테고리별 배지 스타일 지정 함수
   const getCategoryBadgeStyle = (category: Post['category']) => {
@@ -72,14 +88,14 @@ const NoticePage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredPosts.length === 0 ? (
+              {loading || error || posts.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="py-10 text-center text-gray-500 text-sm">
-                    등록된 게시글이 없습니다.
+                    {loading ? '불러오는 중...' : error || '등록된 게시글이 없습니다.'}
                   </td>
                 </tr>
               ) : (
-                filteredPosts.map((post) => (
+                posts.map((post) => (
                   <tr
                     key={post.id}
                     onClick={() => navigate(`/Notice/${post.id}`)}
