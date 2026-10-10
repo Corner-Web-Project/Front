@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 import Input from "../components/Input"
-import { useAuth } from "../context/AuthContext"
+import { useAuth } from "../context/auth"
 export default function SignIn() {
 
   const [id, setId] = useState("")
