@@ -80,14 +80,14 @@ export default function Home() {
       const response = await fetch(`${API_BASE_URL}/api/people`);
 
       if (!response.ok) {
-        throw new Error("People 목록 조회 실패");
+        throw new Error("People 목록 조회에 실패했습니다.");
       }
 
       const data: People[] = await response.json();
       setPeopleList(data);
     } catch (error) {
-      console.error("People 조회 에러:", error);
-      setMessage("멤버 목록을 불러오지 못했어.");
+      console.error("People 조회 오류:", error);
+      setMessage("멤버 목록을 불러오지 못했습니다.");
     }
   };
 
@@ -147,7 +147,7 @@ export default function Home() {
     const token = getAccessToken();
 
     if (!token) {
-      setMessage("로그인이 필요해. 다시 로그인해 줘.");
+      setMessage("로그인이 필요합니다. 다시 로그인해 주세요.");
       return;
     }
 
@@ -155,7 +155,7 @@ export default function Home() {
       !form.peopleName.trim() ||
       !form.peoplePosition.trim()
     ) {
-      setMessage("직책, 이름을 모두 입력");
+      setMessage("직책과 이름을 모두 입력해 주세요.");
       return;
     }
 
@@ -177,7 +177,7 @@ export default function Home() {
 
       if (!response.ok) {
         throw new Error(
-          `멤버 ${isEditing ? "수정" : "추가"} 실패 (${response.status})`
+          `멤버 ${isEditing ? "수정" : "추가"}에 실패했습니다. (${response.status})`
         );
       }
 
@@ -188,13 +188,13 @@ export default function Home() {
       setForm(emptyForm);
       setMessage(
         isEditing
-          ? "멤버 정보를 수정함."
-          : "새 멤버를 추가함."
+          ? "멤버 정보가 수정되었습니다."
+          : "새 멤버가 추가되었습니다."
       );
     } catch (error) {
-      console.error("멤버 저장 에러:", error);
+      console.error("멤버 저장 오류:", error);
       setMessage(
-        "저장에 실패함. 로그인 상태와 서버 응답 확인해야 함."
+        "저장에 실패했습니다. 로그인 상태와 서버 응답을 확인해 주세요."
       );
     }
   };
@@ -202,7 +202,7 @@ export default function Home() {
   // 멤버 삭제
   const handleDelete = async (people: People) => {
     const confirmed = window.confirm(
-      `${people.peopleName} 멤버를 삭제할까?`
+      `${people.peopleName} 멤버를 삭제하시겠습니까?`
     );
 
     if (!confirmed) {
@@ -212,7 +212,7 @@ export default function Home() {
     const token = getAccessToken();
 
     if (!token) {
-      setMessage("로그인이 필요해. 다시 로그인해 줘.");
+      setMessage("로그인이 필요합니다. 다시 로그인해 주세요.");
       return;
     }
 
@@ -228,7 +228,9 @@ export default function Home() {
       );
 
       if (!response.ok) {
-        throw new Error(`멤버 삭제 실패 (${response.status})`);
+        throw new Error(
+          `멤버 삭제에 실패했습니다. (${response.status})`
+        );
       }
 
       if (editingId === people.peopleId) {
@@ -236,11 +238,11 @@ export default function Home() {
       }
 
       await getPeopleList();
-      setMessage("멤버를 삭제했어.");
+      setMessage("멤버가 삭제되었습니다.");
     } catch (error) {
-      console.error("멤버 삭제 에러:", error);
+      console.error("멤버 삭제 오류:", error);
       setMessage(
-        "삭제에 실패했어. 로그인 상태와 서버 응답을 확인해 줘."
+        "삭제에 실패했습니다. 로그인 상태와 서버 응답을 확인해 주세요."
       );
     }
   };
