@@ -1,42 +1,46 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DUMMY_POSTS, type Post } from '../types/types';
+import { type Post } from '../types/types';
+import { createPost } from '../api/post';
+import { useAuth } from '../context/auth';
 
 type Category = Post['category'];
 
 export default function NoticeWrite() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [category, setCategory] = useState<Category>('공지사항');
   const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
+  const author = user?.name ?? '';
   const [content, setContent] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!user) {
+      alert('로그인 후 게시글을 작성해주세요.');
+      return;
+    }
 
     if (!title.trim() || !author.trim() || !content.trim()) {
       alert('제목, 작성자, 내용을 모두 입력해주세요.');
       return;
     }
 
-    const newPost: Post = {
-      id: String(Date.now()),
-      no: String(DUMMY_POSTS.length + 1).padStart(3, '0'),
-      category,
-      title: title.trim(),
-      author: author.trim(),
-      createdAt: new Date().toLocaleDateString('ko-KR', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      }),
-      paragraphs: content.split('\n').filter((line) => line.trim() !== ''),
-    };
-
-    DUMMY_POSTS.unshift(newPost);
-
-    navigate(`/Notice/${newPost.id}`);
+    setSubmitting(true);
+    try {
+      const id = await createPost({
+        category,
+        title: title.trim(),
+        content: content.trim(),
+      });
+      navigate(`/Notice/${id}`);
+    } catch (error) {
+      alert((error as Error).message);
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -77,7 +81,7 @@ export default function NoticeWrite() {
             type="text"
             placeholder="작성자"
             value={author}
-            onChange={(e) => setAuthor(e.target.value)}
+            readOnly
             className="w-full border-b border-gray-300 py-3 text-sm text-[#111827] focus:outline-none focus:border-[#3B82F6] transition"
           />
 
@@ -99,9 +103,10 @@ export default function NoticeWrite() {
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-full text-sm text-white bg-[#3B82F6] hover:bg-[#2563EB] transition"
+              disabled={submitting}
+              className="px-5 py-2.5 rounded-full text-sm text-white bg-[#3B82F6] hover:bg-[#2563EB] transition disabled:opacity-50"
             >
-              등록
+              {submitting ? '등록 중...' : '등록'}
             </button>
           </div>
         </form>

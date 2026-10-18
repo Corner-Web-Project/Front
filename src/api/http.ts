@@ -7,6 +7,11 @@ export class ApiError extends Error {
   }
 }
 
+export function bearerAuthHeader(accessToken: string | null): { Authorization: string } {
+  if (!accessToken?.trim()) throw new Error('로그인이 필요합니다. 다시 로그인해주세요.');
+  return { Authorization: `Bearer ${accessToken.trim().replace(/^Bearer\s+/i, '')}` };
+}
+
 export function apiBaseUrl(value: string | undefined, production: boolean): string {
   if (!value?.trim()) throw new Error("VITE_API_BASE_URL이 설정되지 않았습니다.");
   let url: URL;

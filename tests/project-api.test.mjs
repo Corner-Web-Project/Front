@@ -1,9 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { apiBaseUrl, ApiError, getJson, projectImageUrl } from '../src/api/http.ts';
+import { apiBaseUrl, ApiError, bearerAuthHeader, getJson, projectImageUrl } from '../src/api/http.ts';
 import { parseProjectDetail, parseProjectPage } from '../src/types/project.ts';
 
 const summary = { projectId: 7, generation: 1, title: 'Corner', subtitle: null, banner: null, logo: null };
+
+test('protected requests require the existing access token and produce one Bearer prefix', () => {
+  assert.throws(() => bearerAuthHeader(null), /로그인/);
+  assert.throws(() => bearerAuthHeader('  '), /로그인/);
+  assert.deepEqual(bearerAuthHeader('test-token'), { Authorization: 'Bearer test-token' });
+  assert.deepEqual(bearerAuthHeader('Bearer test-token'), { Authorization: 'Bearer test-token' });
+});
 
 test('DTO contract accepts nullable fields and empty data, rejects old hardcoded shape', () => {
   const page = { projects: [summary], page: 0, size: 12, totalElements: 1, totalPages: 1 };

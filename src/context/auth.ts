@@ -1,8 +1,9 @@
 import { createContext, useContext } from "react"
+import type { Member } from "../api/member"
 
 type AuthContextType = {
-  user: { id: string } | null
-  login: (id: string) => void
+  user: { id: string; name: string } | null
+  login: (accessToken: string, member: Member) => void
   logout: () => void
 }
 

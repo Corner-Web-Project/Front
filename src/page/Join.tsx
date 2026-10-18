@@ -1,8 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import FormInput from "../components/FormInput";
 import FormTextarea from "../components/FormTextarea";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+import { apiUrl } from "../api/config";
 
 export default function Join() {
   const [isWriting, setIsWriting] = useState<boolean>(true);
@@ -85,7 +84,7 @@ export default function Join() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/join-applications`, {
+      const response = await fetch(apiUrl('/api/join-applications'), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -1,77 +1,76 @@
-# Corner Room 프로젝트 조회 연동
+# Corner Room 프론트·백엔드 API 연동
 
-## 분석 기준 (2026-10-18)
+## 연결한 기능
 
-- Front 작업본: `main`, 시작 커밋 `3a5387b`. 기존 `src/page/Join.tsx` 미커밋 수정은 보존.
-- Front 최신 원격 main: `639bb1e`. 회원·게시판·people 연동이 추가되었으며 이번 작업에서는 병합하지 않음.
-- Back 작업본: `feature/join/6`, `987f8eb`. 프로젝트·가입 신청 API가 포함됨.
-- Back 최신 원격 main: `f59128d`. 프로젝트 API는 아직 포함되지 않음. 프로젝트 기능은 `feature/project/14` (`73ded4b`)와 현재 작업 브랜치에 존재.
-- `git fetch origin`으로 원격 참조만 갱신하고 차이를 분석. checkout, merge, commit, push, PR, 배포는 실행하지 않음.
-- React/TypeScript/Tailwind/Vite 프론트는 React Router를 사용. Back은 Spring Boot 3.5.5/Java 21, Security/JWT, JPA, 로컬 H2/운영 MySQL 구조.
-- 공개 Netlify 주소: https://cornerroom.netlify.app/ . 조회 도구에서는 해당 페이지 접근이 실패하여 실제 배포 번들의 API 호출은 검증하지 못함.
-- 운영 백엔드 주소·배포 이력은 저장소에서 확인되지 않음. 사용자도 배포 여부가 불확실하다고 답변. 미배포로 확정하지 않고 **운영 주소 미확정**으로 취급.
+- 프로젝트 목록: `GET /api/projects?generation=1&page=0&size=12`.
+- 프로젝트 상세: `GET /api/projects/{projectId}`.
+- 가입 신청 제출: `POST /api/join-applications`.
+- 팀의 최신 회원가입·JWT 로그인·내 정보 조회·게시판·people 코드를 보존하고 확인된 API의 주소를 `VITE_API_BASE_URL`로 통일했다.
+- 프로젝트 카드·상세 UI와 기수 필터를 유지하며 로딩, 오류·재시도, 빈 목록, 상세 404, 페이지 이동을 처리했다. 기수·페이지·상세 ID 변경 시 이전 요청을 취소한다.
+- 기존 `projectData.ts` 파일은 보존하되 프로젝트 목록·상세는 실제 API만 사용한다.
 
-## 구현과 API 계약
+## 변경 파일과 이유
 
-1. `src/types/project.ts`: `ProjectResponse.Summary`, `Detail`, `PageResult`에 대응하는 타입 및 응답 검증. ID는 `projectId: number`, 기수는 `generation: number`. subtitle/banner/logo는 null 허용.
-2. `src/api/http.ts`, `src/api/projects.ts`: `VITE_API_BASE_URL` 기반 공개 GET. 설정 누락, 운영 HTTP, 비정상 응답, 네트워크 실패, 15초 시간제한 처리. 기본 서버 주소를 추측하지 않음.
-3. `src/hooks/useApiQuery.ts`: 로딩·오류·재시도. 기수·페이지·상세 ID 변경 및 언마운트 시 이전 요청 취소, 늦은 응답 무시.
-4. `src/page/Project.tsx`: `GET /api/projects?generation=1&page=0&size=12`. 응답은 `{projects,page,size,totalElements,totalPages}`. 기수는 서버에서 필터링, 페이지 이동 제공. 카드 UI·기수 버튼 유지.
-5. `src/page/ProjectDetail.tsx`, `src/components/ProjectCard.tsx`: `GET /api/projects/{projectId}` 연동. 숫자 기수를 화면에서 `1기`로 표시, 상세 404·잘못된 ID·팀원 없음·이미지 없음 처리. 원래 제목·설명·팀원 레이아웃 유지.
-6. 기존 `src/data/projectData.ts`와 등록 폼 타입은 팀 코드 보존을 위해 남겨두되 목록·상세에서 더 이상 사용하지 않음. 응답의 상대 이미지 경로는 API 서버 기준으로 해석하며 절대 HTTP(S) URL도 지원. 실제 파일 제공 경로는 운영 데이터 준비 시 확인 필요.
+| 파일 | 변경 이유 |
+| --- | --- |
+| `src/types/project.ts` | 실제 `ProjectResponse` DTO와 같은 타입 및 런타임 응답 검증 |
+| `src/api/http.ts`, `src/api/config.ts` | 주소 검증, JSON 조회·오류·15초 제한, 이미지 경로, Bearer 헤더 |
+| `src/api/projects.ts`, `src/hooks/useApiQuery.ts` | 프로젝트 요청과 취소·재시도·로딩 상태 관리 |
+| `src/page/Project.tsx`, `src/page/ProjectDetail.tsx`, `src/components/ProjectCard.tsx` | 하드코딩을 실제 목록·상세 응답으로 교체 |
+| `src/page/Join.tsx` | 기존 로컬 가입 신청 연결·유효성 검사·제출 결과 표시 보존, 공통 주소 사용 |
+| `src/api/member.ts`, `src/context/AuthContext.tsx`, `src/context/auth.ts`, `src/page/SignIn.tsx` | 팀 JWT 로그인·localStorage 토큰·내 정보 복원 유지, 인증 모듈 충돌 해결 |
+| `src/api/post.ts`, `src/page/NoticeWrite.tsx` | 게시글 작성에 팀의 토큰 첨부. 작성자는 백엔드 인증 회원 기준이므로 화면에도 로그인 이름 표시 |
+| `src/page/Home.tsx` | 팀 people 화면 보존, 하드코딩 주소 제거, 초기 조회 취소 처리 |
+| `.env.example`, `netlify.toml`, `README.md` | 설정 예제·SPA 새로고침 처리·문서 링크 |
+| `tests/project-api.test.mjs` | DTO·설정·오류·이미지·JWT 헤더 검증 |
+| `tests/local-api-smoke.mjs` | 일회성 로컬 H2 서버와 실제 프론트 API 모듈의 HTTP 연동 검사 |
 
-## 인증과 CORS
+## 실제 DTO와 인증
 
-- `SecurityConfig`: 프로젝트 GET은 공개, POST/PUT/DELETE는 ADMIN. 이번 범위는 두 공개 조회이며 토큰을 첨부하지 않음. 관리자 등록·수정·삭제나 이미지 업로드는 연결하지 않음.
-- Back 실제 로그인: `POST /api/auth/tokens`, 요청 `{studentId,password}`, 응답 `{accessToken,tokenType,expiresIn}`. 인증 요청은 `Authorization: Bearer <accessToken>`. `GET /api/members/me`는 인증 필요.
-- Front 최신 원격 main의 팀 인증 코드는 `localStorage`의 `accessToken` 및 `/api/members/me`로 상태 복원. 현재 작업본의 로그인은 이전 `/SignIn` 구현이므로 이 화면까지 연동 완료되었다고 볼 수 없음. 별도 인증 체계는 추가하지 않음.
-- 원격 Front의 회원·게시판 코드는 `VITE_API_URL`을 사용하고 Home에도 API 호출이 있으므로, 추후 **승인된 병합 후** 모든 호출을 `VITE_API_BASE_URL`로 통일하고 인증 필요 쓰기 요청의 Bearer 헤더를 점검해야 함.
-- 기존 Back CORS는 `http://localhost:5173`, `https://cornerroom.netlify.app`를 명시 허용. Spring Security의 CORS 연결도 있음. 보안 정책 변경 없음.
-- 추가한 MockMvc 테스트로 실제 Netlify Origin의 GET·preflight 허용 및 다른 Origin의 거절 확인.
-- 일정 화면 `/api/calendar`는 현재 Back 컨트롤러에 없음. 이 API를 새로 추정하거나 연결하지 않음. 기존 가입 신청 수정도 그대로 보존.
+목록 응답은 배열 자체가 아니라 `{projects,page,size,totalElements,totalPages}`이다. 프로젝트 ID는 `projectId: number`, 기수는 `generation: number`이며 화면에서 `1기`로 표시한다. `subtitle`, `banner`, `logo`는 null을 허용한다. 상세에는 `description`, `stacks: string[]`, `members: {name,role}[]`가 추가된다.
 
-## 로컬 실행
+가입 신청 요청은 `{name,studentId,major,phone,motivation,portfolioUrl,comment}`이며 포트폴리오가 비어 있으면 null을 전송한다. 가입 신청은 성공 후 중복 제출을 막으며 서버 오류를 화면에 표시한다.
 
-Front 루트에서 `.env.example`을 `.env.local`로 복사하고 실행:
+로그인은 `POST /api/auth/tokens`에 `{studentId,password}`를 보내고 `{accessToken,tokenType,expiresIn}`를 받는다. 팀의 기존 방식대로 `localStorage`의 `accessToken`을 사용하고 `GET /api/members/me`로 로그인 상태를 복원한다. 인증이 필요한 요청은 `Authorization: Bearer <accessToken>`을 전송한다. 프로젝트 조회는 공개이고 변경은 ADMIN이며 임시 관리자나 우회는 없다.
+
+상대 이미지 경로는 API 서버를 기준으로 해석하며 절대 HTTP(S) URL도 지원한다. 실제 프로젝트 이미지 제공 경로와 파일은 운영 데이터 준비 시 확인해야 한다.
+
+## 로컬 설정
+
+Front 루트의 `.env.example`을 `.env.local`로 복사한다:
 
 ```dotenv
 VITE_API_BASE_URL=http://localhost:8080
 ```
 
-```powershell
-npm run dev
-```
+Back은 Java 21로 `./gradlew.bat bootRun`, Front는 `npm run dev`로 실행한다. Vite는 환경변수 변경 후 재시작한다. 기존 `VITE_API_URL`을 쓰던 환경도 `VITE_API_BASE_URL`로 변경해야 한다. 설정이 없으면 임의 서버로 요청하지 않고 오류를 표시한다.
 
-Back에서 Java 21로 `./gradlew.bat bootRun` 실행. 기본 local 프로필은 인메모리 H2이며 초기 데이터가 없으면 빈 프로젝트 목록이 정상이다. 테스트 데이터는 프론트에 표시하지 않으며 관리자 우회·임시 계정을 만들지 않음.
+Back의 local 프로필은 인메모리 H2이며 초기 프로젝트 데이터가 없으면 빈 목록이 정상이다. H2 데이터는 종료하면 사라진다.
 
-## Netlify 설정 (승인 후 수행할 절차)
+## Netlify 설정: 배포 승인 후 적용
 
-1. 프로젝트 API가 포함된 백엔드 배포 브랜치/커밋과 실제 외부 접근 가능한 HTTPS 주소를 먼저 확인한다. 현재 원격 main만 배포하면 프로젝트 API가 없다.
-2. Netlify 프로젝트의 환경변수 설정에서 `VITE_API_BASE_URL`에 **실제 백엔드 주소**를 입력한다. `/api/projects`가 아닌 서버 기본 주소이며 코드가 `/api/projects`를 붙인다. 임의 운영 URL은 문서나 환경변수에 입력하지 않는다.
-3. Production 컨텍스트와 Builds 범위(범위 선택이 없으면 기본 전체)에 변수를 제공한다. `VITE_` 값은 브라우저에 공개되므로 JWT 비밀키, 비밀번호, DB 접속정보를 넣지 않는다.
-4. 기존 `netlify.toml`: 빌드 `npm run build`, publish `dist`, Node 24, SPA fallback `/index.html`. 이 설정을 유지한다.
-5. Vite 환경변수는 빌드 시 반영되므로 변경 후 새 빌드/배포가 필요하다. 이번 작업에서는 실행하지 않았다.
-6. 배포 후 `/Project`, `/Project/{실제 ID}` 직접 접근과 새로고침, 브라우저 Network의 대상 URL·JSON·CORS 헤더·오류·빈 목록을 확인한다. Netlify preview 도메인은 현재 CORS 허용 대상이 아니다.
+1. 실제 외부 HTTPS 백엔드 주소와 배포 커밋을 먼저 확인한다. 현재 저장소에서 운영 주소는 확인되지 않았다.
+2. Netlify 프로젝트 환경변수에 `VITE_API_BASE_URL`을 실제 서버 기본 주소로 설정한다. 코드가 `/api/projects` 등 경로를 붙이므로 해당 경로를 환경변수에 중복해서 넣지 않는다.
+3. Production 컨텍스트와 Builds 범위(선택이 없으면 기본 전체)에 값을 제공한다.
+4. 기존 설정은 `npm run build`, publish `dist`, Node 24이며 `netlify.toml`의 SPA fallback을 유지한다.
+5. 환경변수는 빌드 때 반영되므로 변경 후 새 빌드·배포가 필요하다. 이 작업에서는 Netlify 설정 변경이나 배포를 실행하지 않았다.
+
+`VITE_` 값은 브라우저에 공개된다. JWT 비밀키, 비밀번호, DB 접속정보를 넣지 않는다.
+
+Back CORS는 `http://localhost:5173`, `https://cornerroom.netlify.app`을 허용한다. 기존 people 수정 API에 맞춰 PATCH 사전 요청도 허용하되 실제 API의 ADMIN 검증은 유지한다. Netlify preview 도메인은 현재 허용되지 않는다.
 
 공식 참고: [Netlify 환경변수](https://docs.netlify.com/build/environment-variables/overview/), [Vite 환경변수](https://vite.dev/guide/env-and-mode).
 
-## 백엔드 운영 준비에 필요한 정보
+## 백엔드 상태와 남은 범위
 
-- 배포 서비스/서버, 외부 HTTPS 주소, 배포 대상 브랜치·커밋, 프로젝트 API 배포 여부.
-- 서버 환경변수: `SPRING_PROFILES_ACTIVE=prod`, `SPRING_DATASOURCE_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`. 값은 서버 관리 환경에서 설정하고 프론트에 전달하지 않음.
-- 운영 MySQL 스키마 준비. 현재 prod는 `ddl-auto: validate`여서 테이블이 없으면 시작하지 못함. 원격 DB 주소는 기본 localhost 대신 실제 서버 환경에서 설정.
-- 실제 프로젝트 데이터와 배너/로고 이미지 제공 주소. H2 테스트 성공은 MySQL·운영 배포 검증을 대체하지 않음.
+- Project PR #16은 main에 병합됐다. 가입 신청은 PR #13에서 최신 main과 통합해 검증한다.
+- GitHub 배포 이력 0건, Actions 워크플로 0건, 저장소 운영 URL 없음. 이 사실만으로 외부 수동 배포 여부는 단정할 수 없다.
+- 운영에는 서버 측 `SPRING_PROFILES_ACTIVE=prod`, `SPRING_DATASOURCE_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET` 설정과 MySQL 스키마가 필요하다. prod의 `ddl-auto: validate`에 맞춰 테이블을 준비해야 한다.
+- 가입 신청 조회·심사·삭제 권한은 현재 팀의 기존 공개 정책을 유지한다. 이 화면에는 제출만 연결하며 관리 기능을 새로 노출하지 않는다. 운영 전 관리 권한 정책 확정이 필요하다.
+- 일정 화면의 기존 `/api/calendar` 호출은 현재 백엔드에 대응 API가 없어 이번 연결 범위에서 제외했다. 프로젝트 등록·이미지 업로드도 이번 범위가 아니다.
+- 실제 운영 HTTPS·MySQL·브라우저 UI 시각 검증은 완료되지 않았다.
 
-## 후속 Project PR 병합 (2026-10-18)
-
-- 사용자 승인에 따라 별도 작업 폴더에서 Project 브랜치와 최신 main(`f59128d`)을 통합했다. 실제 미해결 충돌은 없었으며 SecurityConfig의 프로젝트·people 권한과 Project/ProjectMember 엔티티를 유지했다.
-- 전체 테스트 44개와 `bootJar` 성공, CodeRabbit 검토 성공 후 `7dfe208`을 `feature/project/14`에 푸시했다. 이 테스트 집합은 가입 신청 기능이 없는 Project PR 기준이므로 앞선 가입 신청 브랜치의 47개와 다르다.
-- [Project PR #16](https://github.com/Corner-Web-Project/Back/pull/16)을 main에 병합했다. 병합 커밋: `d7a2e89158a150443725e384bd3d7e0d5a0ea791`. 따라서 위 최초 분석과 달리 **이제 원격 main에 프로젝트 API가 포함된다**.
-- Front의 미커밋 연동 수정과 기존 Join 수정, Back 가입 신청 브랜치는 보존했다. 프론트 최신 원격 main과의 통합은 아직 진행하지 않았다.
-- GitHub 배포 이력 0건, Actions 워크플로 0건, 저장소 homepage 및 운영 배포 URL 없음. 로컬 8080도 조회 시점에 리스닝 상태가 아니었다. 이 근거만으로 외부 수동 배포 유무나 IntelliJ 실행 이력을 단정할 수 없다.
-- 실제 백엔드 배포와 Netlify 환경변수 설정은 진행하지 않았다. 운영 주소 확인이 여전히 필요하다.
-
-## 검증 명령
+## 검증
 
 ```powershell
 # Front
@@ -79,21 +78,11 @@ node --test tests/project-api.test.mjs
 npm run build
 npm run lint
 # Back
-./gradlew.bat test --console=plain
+./gradlew.bat test bootJar --console=plain
 ```
 
-프론트 테스트는 DTO/null/빈 응답/구형 데이터 거절, URL 설정, 이미지 URL, 공개 요청, HTTP 404, HTML 오응답, 네트워크 오류, 취소를 검증한다. 실제 운영 서버 호출 및 브라우저 UI 시각 검증은 별도 확인이 필요하다.
+프론트 테스트는 JWT 헤더, DTO/null/빈 응답/구형 데이터 거절, URL 설정, 이미지 URL, 공개 요청, HTTP 404, HTML 오응답, 네트워크 오류, 취소를 확인한다. 백엔드 테스트는 가입 신청 제출·검증·Netlify CORS, 프로젝트 CRUD·권한과 people PATCH 권한을 확인한다.
 
-2026-10-18 실행 결과:
+2026-10-18 결과: 프론트 테스트 5개·빌드·린트 통과, 백엔드 전체 테스트 49개·`bootJar` 통과. Java 21/local 프로필의 일회성 H2 서버에서 프론트 API 모듈을 실제 호출해 프로젝트 목록·404, 회원가입·로그인·내 정보, JWT 게시글 작성·조회, 가입 신청 제출, PATCH 사전 요청과 일반 회원의 ADMIN 요청 403을 확인했다. 검증 서버는 종료했다.
 
-| 검증 | 결과 |
-| --- | --- |
-| Front API 처리 테스트 | 4개 통과 |
-| Front TypeScript 및 Vite 빌드 | 통과 |
-| Front ESLint | 통과 |
-| Back 전체 테스트 | 47개 통과, 실패·오류 0 |
-| Back 프로젝트 테스트 | 위 47개 중 7개, Netlify CORS 허용·다른 Origin 거절 포함 |
-| 두 저장소 `git diff --check` | 통과 |
-| 운영 HTTPS API·MySQL·브라우저 화면 | 미검증 |
-
-Back 변경 파일은 `src/test/java/com/cornerroom/back/controller/ProjectControllerTest.java`(CORS 회귀 검증)와 `docs/projects-api.md`(현재 JWT 구현 및 401/403 설명 정정)뿐이며 실행 코드·보안 설정은 변경하지 않았다. Front 추가 테스트는 `tests/project-api.test.mjs`, 설정 설명은 `.env.example`, 문서 진입 링크는 `README.md`에 추가했다.
+실제 HTTP 검사를 재현하려면 운영 데이터가 없는 별도 local 프로필 서버를 실행한 뒤 `SMOKE_API_BASE_URL`을 그 로컬 HTTP 주소로 지정하고 `node tests/local-api-smoke.mjs`를 실행한다. 테스트는 일반 회원·게시글·가입 신청을 생성하므로 일회성 H2에서만 실행한다. 관리자 계정을 만들거나 권한을 우회하지 않는다.

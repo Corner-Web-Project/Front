@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 import Input from "../components/Input"
 import { useAuth } from "../context/auth"
+import { createToken, getMyMember } from "../api/member"
 export default function SignIn() {
 
   const [id, setId] = useState("")
@@ -12,24 +13,13 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const response = await fetch("http://localhost:8080/SignIn", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id,
-        pw,
-      })
-    })
-
-    const data = await response.json()
-
-    if (data.success) {
-      login(id)
+    try {
+      const accessToken = await createToken({ studentId: id, password: pw })
+      const member = await getMyMember(accessToken)
+      login(accessToken, member)
       navigate("/")
-    } else {
-      alert(data.message)
+    } catch (error) {
+      alert((error as Error).message)
     }
   }
 
