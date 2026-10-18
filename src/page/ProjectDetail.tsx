@@ -1,11 +1,24 @@
 import { useParams } from "react-router-dom";
-import { projectData } from "../data/projectData";
+import { useCallback } from "react";
+import { getProject, projectImage } from "../api/projects";
+import { ApiError } from "../api/http";
+import { useApiQuery } from "../hooks/useApiQuery";
 
 export default function ProjectDetail() {
   const { id } = useParams();
+  const validId = !!id && /^[1-9]\d*$/.test(id);
+  const load = useCallback((signal: AbortSignal) => {
+    if (!validId) throw new ApiError(404, "프로젝트를 찾을 수 없습니다.");
+    return getProject(id!, signal);
+  }, [id, validId]);
+  const { data: project, error, loading, retry } = useApiQuery(load);
 
-  const project = projectData.find(
-    (item) => item.id === Number(id)
+  if (loading) return <p role="status" className="p-10 text-center text-gray-500">프로젝트를 불러오는 중입니다.</p>;
+  if (error && !(error instanceof ApiError && error.status === 404)) return (
+    <div role="alert" className="p-10 text-center">
+      <p className="text-red-600">{error.message}</p>
+      <button onClick={retry} className="mt-4 rounded-full bg-[#014BAA] px-5 py-2 text-white">다시 시도</button>
+    </div>
   );
 
   if (!project) {
@@ -23,7 +36,7 @@ export default function ProjectDetail() {
       <div className="mb-10">
 
         <span className="rounded-full bg-[#014BAA] px-4 py-2 text-sm font-bold text-white">
-          {project.generation}
+          {project.generation}기
         </span>
 
         <h1 className="mt-5 text-5xl font-bold text-[#014BAA]">
@@ -37,11 +50,11 @@ export default function ProjectDetail() {
       </div>
 
       {/* 대표 배너 */}
-      <img
-        src={project.banner}
+      {project.banner ? <img
+        src={projectImage(project.banner)}
         alt={project.title}
         className="mb-10 h-[350px] w-full rounded-2xl object-cover shadow-lg"
-      />
+      /> : <div aria-label="대표 이미지 없음" className="mb-10 h-[350px] w-full rounded-2xl bg-gray-100 shadow-lg" />}
 
       
 

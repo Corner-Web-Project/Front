@@ -1,5 +1,7 @@
 # React + TypeScript + Vite
 
+Corner Room 프로젝트 조회 API와 환경변수·Netlify 설정: [백엔드 연동 문서](docs/backend-integration.md).
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

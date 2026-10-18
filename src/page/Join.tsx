@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import FormInput from "../components/FormInput";
 import FormTextarea from "../components/FormTextarea";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
 export default function Join() {
   const [isWriting, setIsWriting] = useState<boolean>(true);
-
-  
   const [name, setName] = useState("");
   const [studentId, setStudentId] = useState("");
   const [major, setMajor] = useState("");
@@ -13,12 +13,16 @@ export default function Join() {
   const [reason, setReason] = useState("");
   const [portfolio, setPortfolio] = useState("");
   const [comment, setComment] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   const handlePhoneChange = (
   e:
     | React.ChangeEvent<HTMLInputElement>
     | React.ChangeEvent<HTMLTextAreaElement>
 ) => {
-  let value = e.target.value.replace(/\D/g, "");
+  const value = e.target.value.replace(/\D/g, "");
   if (value.length < 4) {
     setPhone(value);
   } else if (value.length < 8) {
@@ -44,7 +48,10 @@ export default function Join() {
   setName(e.target.value.replace(/\d/g, ""));
 };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmissionError("");
+
     if (!name.trim()) {
       alert("이름을 입력해주세요.");
       return;
@@ -75,7 +82,44 @@ export default function Join() {
       return;
     }
 
-    alert("제출 완료!");
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/join-applications`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          studentId: studentId.trim(),
+          major: major.trim(),
+          phone: phone.trim(),
+          motivation: reason.trim(),
+          portfolioUrl: portfolio.trim() || null,
+          comment: comment.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        let errorMessage = `가입 신청에 실패했습니다. (${response.status})`;
+        try {
+          const errorBody = await response.json();
+          errorMessage = errorBody.detail || errorBody.message || errorMessage;
+        } catch {
+          // Keep the status-based message when the response has no JSON body.
+        }
+        throw new Error(errorMessage);
+      }
+
+      setIsSubmitted(true);
+    } catch (error) {
+      setSubmissionError(
+        error instanceof Error
+          ? error.message
+          : "가입 신청 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -118,7 +162,7 @@ export default function Join() {
             📋 신청서 작성
           </h2>
 
-          <form className="flex flex-col gap-5">
+          <form id="join-application-form" onSubmit={handleSubmit} className="flex flex-col gap-5">
 
             <FormInput
               label="이름"
@@ -171,10 +215,23 @@ export default function Join() {
             <FormTextarea
               label="하고 싶은 말"
               placeholder="자유롭게 작성해주세요."
+              required
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               maxLength={300}
             />
+
+            {submissionError && (
+              <p role="alert" className="text-sm text-red-600">
+                {submissionError}
+              </p>
+            )}
+
+            {isSubmitted && (
+              <p role="status" className="text-sm text-green-700">
+                가입 신청이 제출되었습니다.
+              </p>
+            )}
 
           </form>
 
@@ -189,11 +246,12 @@ export default function Join() {
             </button>
 
             <button
-              type="button"
-              onClick={handleSubmit}
-              className="w-2/3 bg-[#014BAA] text-white p-3 rounded-xl transition-colors duration-200 hover:bg-[#003882]"
+              type="submit"
+              form="join-application-form"
+              disabled={isSubmitting || isSubmitted}
+              className="w-2/3 bg-[#014BAA] text-white p-3 rounded-xl transition-colors duration-200 hover:bg-[#003882] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              제출하기
+              {isSubmitting ? "제출 중..." : isSubmitted ? "제출 완료" : "제출하기"}
             </button>
 
           </div>
