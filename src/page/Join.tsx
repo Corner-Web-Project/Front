@@ -1,9 +1,12 @@
 import { useState, type FormEvent } from 'react';
+import { useNavigate } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import FormTextarea from "../components/FormTextarea";
 import { apiUrl } from "../api/config";
+import { submitJoinApplication } from "../api/join";
 
 export default function Join() {
+  const navigate = useNavigate();
   const [isWriting, setIsWriting] = useState<boolean>(true);
   const [name, setName] = useState("");
   const [studentId, setStudentId] = useState("");
@@ -14,7 +17,6 @@ export default function Join() {
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionError, setSubmissionError] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handlePhoneChange = (
   e:
@@ -49,6 +51,7 @@ export default function Join() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isSubmitting) return;
     setSubmissionError("");
 
     if (!name.trim()) {
@@ -76,18 +79,12 @@ export default function Join() {
       return;
     }
 
-    if (!comment.trim()) {
-      alert("하고 싶은 말을 입력해주세요.");
-      return;
-    }
+    
 
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(apiUrl('/api/join-applications'), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      await submitJoinApplication(apiUrl('/api/join-applications'), {
           name: name.trim(),
           studentId: studentId.trim(),
           major: major.trim(),
@@ -95,21 +92,10 @@ export default function Join() {
           motivation: reason.trim(),
           portfolioUrl: portfolio.trim() || null,
           comment: comment.trim(),
-        }),
       });
 
-      if (!response.ok) {
-        let errorMessage = `가입 신청에 실패했습니다. (${response.status})`;
-        try {
-          const errorBody = await response.json();
-          errorMessage = errorBody.detail || errorBody.message || errorMessage;
-        } catch {
-          // Keep the status-based message when the response has no JSON body.
-        }
-        throw new Error(errorMessage);
-      }
-
-      setIsSubmitted(true);
+      alert("가입 신청이 제출되었습니다.");
+      navigate("/", { replace: true });
     } catch (error) {
       setSubmissionError(
         error instanceof Error
@@ -122,13 +108,11 @@ export default function Join() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-50 p-6">
+    <div className="min-h-screen flex justify-center items-center bg-[#F8F3F0] p-6">
 
       {isWriting ? (
 
         <div className="relative w-[600px] h-[300px]">
-
-          <div className="absolute inset-0 bg-[#014BAA] opacity-20 rounded-2xl -translate-x-4 -translate-y-4 shadow-md"></div>
 
           <div className="absolute inset-0 bg-white p-12 rounded-2xl shadow-xl border border-gray-100 text-center flex flex-col items-center justify-center gap-6">
 
@@ -169,6 +153,7 @@ export default function Join() {
               required
               value={name}
               onChange={handleNameChange}
+              maxLength={50}
             />
 
             <FormInput
@@ -177,6 +162,7 @@ export default function Join() {
               required
               value={studentId}
               onChange={handleStudentId}
+              maxLength={20}
               />
 
             <FormInput
@@ -185,6 +171,7 @@ export default function Join() {
               required
               value={major}
               onChange={(e) => setMajor(e.target.value)}
+              maxLength={50}
             />
 
            <FormInput
@@ -206,15 +193,16 @@ export default function Join() {
 
             <FormTextarea
               label="포트폴리오 / 활동 링크"
-              placeholder="GitHub, Blog, Notion 등 링크나 파일을 첨부해 주세요."
+              placeholder="GitHub, Blog, Notion 등의 링크를 입력해 주세요."
               value={portfolio}
               onChange={(e) => setPortfolio(e.target.value)}
+              maxLength={255}
             />
 
             <FormTextarea
               label="하고 싶은 말"
               placeholder="자유롭게 작성해주세요."
-              required
+            
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               maxLength={300}
@@ -226,12 +214,6 @@ export default function Join() {
               </p>
             )}
 
-            {isSubmitted && (
-              <p role="status" className="text-sm text-green-700">
-                가입 신청이 제출되었습니다.
-              </p>
-            )}
-
           </form>
 
           <div className="flex gap-3 mt-6">
@@ -239,6 +221,7 @@ export default function Join() {
             <button
               type="button"
               onClick={() => setIsWriting(true)}
+              disabled={isSubmitting}
               className="w-1/3 bg-gray-100 p-3 rounded-xl transition-colors duration-200 hover:bg-[#e3e2e2]"
             >
               이전으로
@@ -247,10 +230,10 @@ export default function Join() {
             <button
               type="submit"
               form="join-application-form"
-              disabled={isSubmitting || isSubmitted}
+              disabled={isSubmitting}
               className="w-2/3 bg-[#014BAA] text-white p-3 rounded-xl transition-colors duration-200 hover:bg-[#003882] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isSubmitting ? "제출 중..." : isSubmitted ? "제출 완료" : "제출하기"}
+              {isSubmitting ? "제출 중..." : "제출하기"}
             </button>
 
           </div>
