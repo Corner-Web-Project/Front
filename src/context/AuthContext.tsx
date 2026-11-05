@@ -5,11 +5,12 @@ import { AuthContext } from "./auth"
 type User = {
   id: string
   name: string
+  role: Member['role']
 }
 
 const ACCESS_TOKEN_KEY = "accessToken"
 
-const toUser = (member: Member): User => ({ id: member.studentId, name: member.name })
+const toUser = (member: Member): User => ({ id: member.studentId, name: member.name, role: member.role })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)

@@ -4,12 +4,20 @@ import HeroSectionProject from "../components/HeroSectionProject";
 import GenerationFilter from "../components/GenerationFilter";
 import { getProjects } from "../api/projects";
 import { useApiQuery } from "../hooks/useApiQuery";
+import { Link, useSearchParams } from "react-router-dom";
+import { useAuth } from "../context/auth";
 
 export default function Project() {
-  const [selectedGeneration, setSelectedGeneration] = useState("1기");
+  const [params] = useSearchParams();
+  const initialGeneration = params.get('generation') ?? '1';
+  const [selectedGeneration, setSelectedGeneration] = useState(`${/^[1-4]$/.test(initialGeneration) ? initialGeneration : '1'}기`);
+  const { user } = useAuth();
   return (
     <div className="mx-auto max-w-7xl p-10">
       <HeroSectionProject />
+      {user?.role === 'ADMIN' && <div className="mb-5 flex justify-end">
+        <Link to="/Projectup" className="rounded-full bg-[#014BAA] px-6 py-3 font-bold text-white">+ 프로젝트 등록</Link>
+      </div>}
       <GenerationFilter selectedGeneration={selectedGeneration} setSelectedGeneration={setSelectedGeneration} />
       <ProjectResults key={selectedGeneration} generation={Number.parseInt(selectedGeneration, 10)} />
     </div>
@@ -32,7 +40,7 @@ function ProjectResults({ generation }: { generation: number }) {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         {data.projects.map((project) => <ProjectCard key={project.projectId} project={project} />)}
       </div>
       {data.totalPages > 1 && (
