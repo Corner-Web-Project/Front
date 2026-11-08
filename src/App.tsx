@@ -16,6 +16,7 @@ import SignUp from "./page/SignUp"
 import FindId from './page/FindId.tsx'
 import FindPw from './page/FindPw.tsx'
 import NotFound from './page/NotFound.tsx'
+import Admin from './page/Admin.tsx'
 import Footer from './page/Footer.tsx'
 
 export default function App() {
@@ -34,11 +35,13 @@ export default function App() {
           <Route path='/Notice' element={<Notice/>} />
           <Route path='/Notice/write' element={<NoticeWrite/>} />
           <Route path='/Notice/:id' element={<NoticeDetail/>} />
+          <Route path='/Notice/:id/edit' element={<NoticeWrite/>} />
           <Route path='/Join' element={<Join/>} />
           <Route path='/SignIn' element={<SignIn/>} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path='/SignIn/FindID' element={<FindId/>} />
           <Route path='/SignIn/FindPW' element={<FindPw/>} />
+          <Route path='/Admin' element={<Admin/>} />
           <Route path='/not-found' element={<NotFound/>} />
           <Route path='*' element={<Navigate to='/not-found' />} />
         </Routes>

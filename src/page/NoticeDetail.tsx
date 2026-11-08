@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { type Post } from '../types/types';
-import { getPost } from '../api/post';
+import { deletePost, getPost } from '../api/post';
+import { useAuth } from '../context/auth';
 
 const getCategoryBadgeStyle = (category: Post['category']) => {
   switch (category) {
@@ -19,8 +20,10 @@ const getCategoryBadgeStyle = (category: Post['category']) => {
 export default function NoticeDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [result, setResult] = useState<{ id: string; post: Post | null; error: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -42,9 +45,24 @@ export default function NoticeDetail() {
   const post = loading ? null : result?.post ?? null;
   const error = (!loading && result?.error) || '';
 
+  // 작성자 본인 또는 운영진(ADMIN)만 수정 / 삭제 가능 (실제 권한 검사는 Back에서)
+  const canEdit = !!user && !!post && (user.role === 'ADMIN' || user.memberId === post.authorId);
+
+  const handleDelete = async () => {
+    if (!post || !window.confirm('게시글을 삭제하시겠습니까?')) return;
+    setDeleting(true);
+    try {
+      await deletePost(post.id);
+      navigate('/Notice');
+    } catch (e) {
+      alert((e as Error).message);
+      setDeleting(false);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center text-sm text-gray-500">
+      <div className="min-h-screen bg-[#F8F3F0] flex items-center justify-center text-sm text-gray-500">
         불러오는 중...
       </div>
     );
@@ -52,7 +70,7 @@ export default function NoticeDetail() {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen bg-[#F8F3F0] flex flex-col items-center justify-center gap-4">
         <h1 className="text-2xl font-bold text-[#333333]">{error || '게시글을 찾을 수 없습니다.'}</h1>
         <button
           onClick={() => navigate('/Notice')}
@@ -65,7 +83,7 @@ export default function NoticeDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#333333] font-sans antialiased pb-20">
+    <div className="min-h-screen bg-[#F8F3F0] text-[#333333] font-sans antialiased pb-20">
       <main className="max-w-5xl mx-auto px-4 pt-12">
         <button
           onClick={() => navigate('/Notice')}
@@ -83,9 +101,27 @@ export default function NoticeDetail() {
             {post.title}
           </h1>
 
-          <div className="mt-3 flex gap-4 text-xs text-[#9CA3AF] font-light">
+          <div className="mt-3 flex items-center gap-4 text-xs text-[#9CA3AF] font-light">
             <span>{post.author}</span>
             <span>{post.createdAt}</span>
+
+            {canEdit && (
+              <div className="ml-auto flex gap-2">
+                <button
+                  onClick={() => navigate(`/Notice/${post.id}/edit`)}
+                  className="px-3 py-1 rounded-full text-xs text-[#4B5563] bg-[#E5E7EB] hover:bg-gray-300 transition"
+                >
+                  수정
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="px-3 py-1 rounded-full text-xs text-white bg-[#EF4444] hover:bg-[#DC2626] transition disabled:opacity-50"
+                >
+                  {deleting ? '삭제 중...' : '삭제'}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

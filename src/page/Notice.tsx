@@ -50,7 +50,7 @@ const NoticePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#333333] font-sans antialiased relative pb-20">
+    <div className="min-h-screen bg-[#F8F3F0] text-[#333333] font-sans antialiased relative pb-20">
       {/* 1. 타이틀 섹션 (상단 마진을 mt-12로 다소 조정하여 공통 헤더와의 간격을 최적화) */}
       <main className="max-w-5xl mx-auto px-4 pt-12">
         <section className="text-center mb-12">

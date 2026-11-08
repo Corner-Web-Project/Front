@@ -63,3 +63,44 @@ export const getMyMember = async (accessToken: string): Promise<Member> => {
   if (!response.ok) throw new Error('로그인 정보를 확인할 수 없습니다.');
   return response.json();
 };
+
+// 회원 목록 응답 (운영진 전용)
+interface MemberPageResponse {
+  members: Member[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+// 403 / 404 / 409 이면 서버가 보낸 사유를, 아니면 기본 메시지를 사용
+const getErrorMessage = async (response: Response, defaultMessage: string) => {
+  if (![403, 404, 409].includes(response.status)) return defaultMessage;
+  const error = await response.json().catch(() => null);
+  return error?.message || defaultMessage;
+};
+
+// 회원 목록 (가입순). 운영진이 아니면 403
+export const getMembers = async (): Promise<Member[]> => {
+  // TODO: 회원 수가 많아지면 페이지네이션 UI 추가
+  const response = await fetch(apiUrl('/api/members?page=0&size=100'), {
+    headers: bearerAuthHeader(localStorage.getItem('accessToken')),
+  });
+  if (!response.ok) throw new Error(await getErrorMessage(response, '회원 목록을 불러오지 못했습니다.'));
+  const data: MemberPageResponse = await response.json();
+  return data.members;
+};
+
+// 회원 권한 변경. 본인 권한 변경(403), 마지막 운영진 강등(409)은 서버에서 막는다
+export const updateMemberRole = async (memberId: number, role: Member['role']): Promise<Member> => {
+  const response = await fetch(apiUrl(`/api/members/${memberId}/role`), {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...bearerAuthHeader(localStorage.getItem('accessToken')),
+    },
+    body: JSON.stringify({ role }),
+  });
+  if (!response.ok) throw new Error(await getErrorMessage(response, '권한 변경에 실패했습니다.'));
+  return response.json();
+};
