@@ -49,7 +49,7 @@ export default function Nav(){
       {user ? (
         <div className="flex items-center">
           <span className="text-[#014BAA] font-medium mr-3">
-            {user.id}님
+            {user.name}님
           </span>
 
           <button
@@ -64,6 +64,23 @@ export default function Nav(){
           >
             logout
           </button>
+
+          {/* 운영진(ADMIN)만 관리자 페이지 이동 버튼 표시 */}
+          {user.role === "ADMIN" && (
+            <Link
+              to="/Admin"
+              className="
+                ml-3
+                border-l border-[#014BAA]/20
+                pl-3
+                text-[#014BAA]/55
+                transition duration-200
+                hover:text-[#014BAA]
+              "
+            >
+              Admin
+            </Link>
+          )}
         </div>
       ) : (
         <NavLink to="/SignIn">

@@ -8,6 +8,9 @@ export interface Post {
   author: string;
   createdAt: string;             // 작성일 (기존 'createdAt'으로 통일)
   paragraphs?: string[];         // [선택 항목] 상세 페이지의 본문 글 상자 배열 (목록에서는 제외 가능)
+  content?: string;              // [선택 항목] 상세 조회 원문 (수정 화면 초기값)
+  authorId?: number;             // [선택 항목] 작성 회원 id (수정 / 삭제 버튼 표시용)
+  isPinned?: boolean;            // [선택 항목] 상단 고정 여부 (수정 시 그대로 유지)
 }
 
 // 두 페이지에서 공용으로 사용할 수 있는 확장된 더미 데이터
