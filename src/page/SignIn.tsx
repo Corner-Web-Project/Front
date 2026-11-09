@@ -17,7 +17,7 @@ export default function SignIn() {
       const accessToken = await createToken({ studentId: id, password: pw })
       const member = await getMyMember(accessToken)
       login(accessToken, member)
-      navigate("/")
+      navigate(member.role === 'ADMIN' ? '/Project' : '/', { replace: true })
     } catch (error) {
       alert((error as Error).message)
     }

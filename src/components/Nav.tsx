@@ -48,6 +48,11 @@ export default function Nav(){
       
       {user ? (
         <div className="flex items-center">
+          {user.role === 'ADMIN' && (
+            <NavLink to="/Projectup" className="mr-4 whitespace-nowrap rounded-lg bg-[#014BAA] px-4 py-2 text-white">
+              프로젝트 등록
+            </NavLink>
+          )}
           <span className="text-[#014BAA] font-medium mr-3">
             {user.id}님
           </span>
