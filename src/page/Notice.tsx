@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Pencil } from 'lucide-react'; // 글쓰기 버튼 아이콘용
 import { type Post } from '../types/types';
 import { getPosts } from '../api/post';
+import { useAuth } from '../context/auth';
 
 type CategoryFilter = '전체' | '공지사항' | 'FAQ' | '질문';
 
 const NoticePage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('전체');
   const [result, setResult] = useState<{ category: CategoryFilter; posts: Post[]; error: string } | null>(null);
 
@@ -45,7 +47,13 @@ const NoticePage: React.FC = () => {
     }
   };
 
+  // 비로그인 상태면 안내 후 로그인 페이지로 이동
   const handleWriteClick = () => {
+    if (!user) {
+      alert('로그인 후 게시글을 작성해주세요.');
+      navigate('/SignIn');
+      return;
+    }
     navigate('/Notice/write');
   };
 
