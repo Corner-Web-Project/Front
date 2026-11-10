@@ -74,7 +74,7 @@ export default function NoticeDetail() {
         <h1 className="text-2xl font-bold text-[#333333]">{error || '게시글을 찾을 수 없습니다.'}</h1>
         <button
           onClick={() => navigate('/Notice')}
-          className="px-4 py-2 rounded-full bg-[#3B82F6] text-white text-sm hover:bg-[#2563EB] transition"
+          className="rounded-md border border-[#014BAA] px-3 py-1 text-sm text-[#014BAA] transition hover:bg-[#014BAA] hover:text-white"
         >
           목록으로 돌아가기
         </button>
@@ -109,14 +109,14 @@ export default function NoticeDetail() {
               <div className="ml-auto flex gap-2">
                 <button
                   onClick={() => navigate(`/Notice/${post.id}/edit`)}
-                  className="px-3 py-1 rounded-full text-xs text-[#4B5563] bg-[#E5E7EB] hover:bg-gray-300 transition"
+                  className="rounded-md border border-[#014BAA] px-3 py-1 text-sm text-[#014BAA] transition hover:bg-[#014BAA] hover:text-white"
                 >
                   수정
                 </button>
                 <button
                   onClick={handleDelete}
                   disabled={deleting}
-                  className="px-3 py-1 rounded-full text-xs text-white bg-[#EF4444] hover:bg-[#DC2626] transition disabled:opacity-50"
+                  className="rounded-md border border-[#EF4444] px-3 py-1 text-sm text-[#EF4444] transition hover:bg-[#EF4444] hover:text-white disabled:opacity-50"
                 >
                   {deleting ? '삭제 중...' : '삭제'}
                 </button>

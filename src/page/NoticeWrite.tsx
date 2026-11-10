@@ -111,7 +111,7 @@ export default function NoticeWrite() {
         </h1>
         <button
           onClick={() => navigate(backPath)}
-          className="px-4 py-2 rounded-full bg-[#3B82F6] text-white text-sm hover:bg-[#2563EB] transition"
+          className="rounded-md border border-[#014BAA] px-3 py-1 text-sm text-[#014BAA] transition hover:bg-[#014BAA] hover:text-white"
         >
           돌아가기
         </button>
@@ -134,10 +134,10 @@ export default function NoticeWrite() {
                 type="button"
                 key={c}
                 onClick={() => setCategory(c)}
-                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all shadow-sm ${
+                className={`rounded-md border border-[#014BAA] px-3 py-1 text-sm transition ${
                   category === c
-                    ? 'bg-[#3B82F6] text-white ring-2 ring-blue-300'
-                    : 'bg-[#E5E7EB] text-[#4B5563] hover:bg-gray-300'
+                    ? 'bg-[#014BAA] text-white'
+                    : 'text-[#014BAA] hover:bg-[#014BAA] hover:text-white'
                 }`}
               >
                 {c}
@@ -173,14 +173,14 @@ export default function NoticeWrite() {
             <button
               type="button"
               onClick={() => navigate(backPath)}
-              className="px-5 py-2.5 rounded-full text-sm text-[#4B5563] bg-[#E5E7EB] hover:bg-gray-300 transition"
+              className="rounded-md border border-[#014BAA] px-3 py-1 text-sm text-[#014BAA] transition hover:bg-[#014BAA] hover:text-white"
             >
               취소
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2.5 rounded-full text-sm text-white bg-[#3B82F6] hover:bg-[#2563EB] transition disabled:opacity-50"
+              className="rounded-md border border-[#014BAA] px-3 py-1 text-sm text-[#014BAA] transition hover:bg-[#014BAA] hover:text-white disabled:opacity-50"
             >
               {isEdit ? (submitting ? '수정 중...' : '수정') : (submitting ? '등록 중...' : '등록')}
             </button>

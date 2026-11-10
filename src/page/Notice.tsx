@@ -64,10 +64,10 @@ const NoticePage: React.FC = () => {
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all shadow-sm ${
+              className={`rounded-md border border-[#014BAA] px-3 py-1 text-sm transition ${
                 selectedCategory === category
-                  ? 'bg-[#3B82F6] text-white ring-2 ring-blue-300'
-                  : 'bg-[#E5E7EB] text-[#4B5563] hover:bg-gray-300'
+                  ? 'bg-[#014BAA] text-white'
+                  : 'text-[#014BAA] hover:bg-[#014BAA] hover:text-white'
               }`}
             >
               {category}
@@ -123,11 +123,11 @@ const NoticePage: React.FC = () => {
       {/* 4. 우측 하단 글쓰기 플로팅 버튼 */}
       <button
         onClick={handleWriteClick}
-        className="fixed bottom-8 right-8 flex items-center space-x-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white px-5 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 z-50 group"
+        className="fixed bottom-8 right-8 z-50 flex items-center gap-1.5 rounded-md border border-[#014BAA] bg-white px-3 py-1 text-sm text-[#014BAA] shadow-md transition hover:bg-[#014BAA] hover:text-white"
         aria-label="글쓰기"
       >
-        <Pencil className="w-5 h-5 group-hover:rotate-12 transition-transform duration-200" />
-        <span className="font-medium text-sm">글쓰기</span>
+        <Pencil className="w-4 h-4" />
+        <span>글쓰기</span>
       </button>
     </div>
   );
