@@ -109,7 +109,7 @@ const NoticePage: React.FC = () => {
                     onClick={() => navigate(`/Notice/${post.id}`)}
                     className="border-b border-gray-200 text-sm hover:bg-gray-50/50 transition cursor-pointer"
                   >
-                    <td className="py-4 text-center text-[#9CA3AF]">{post.no}</td>
+                    <td className="py-4 text-center text-[#4B5563] text-xs font-medium">{post.no}</td>
                     <td className="py-4 text-center">
                       <span className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-semibold tracking-wide ${getCategoryBadgeStyle(post.category)}`}>
                         {post.category}
@@ -118,8 +118,8 @@ const NoticePage: React.FC = () => {
                     <td className="py-4 pl-4 font-medium text-[#1F2937] hover:text-blue-600 transition">
                       {post.title}
                     </td>
-                    <td className="py-4 text-center text-[#D1D5DB] text-xs font-light">{post.author}</td>
-                    <td className="py-4 text-center text-[#D1D5DB] text-xs font-light">{post.createdAt}</td>
+                    <td className="py-4 text-center text-[#4B5563] text-xs font-medium">{post.author}</td>
+                    <td className="py-4 text-center text-[#4B5563] text-xs font-medium">{post.createdAt}</td>
                   </tr>
                 ))
               )}

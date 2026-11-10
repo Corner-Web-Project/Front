@@ -101,7 +101,7 @@ export default function NoticeDetail() {
             {post.title}
           </h1>
 
-          <div className="mt-3 flex items-center gap-4 text-xs text-[#9CA3AF] font-light">
+          <div className="mt-3 flex items-center gap-4 text-xs text-[#1F2937]">
             <span>{post.author}</span>
             <span>{post.createdAt}</span>
 
