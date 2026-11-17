@@ -81,26 +81,14 @@
   to { transform: translateX(130vw); }
 }
 
+/* 불빛은 움직이지 않고 밝기만 천천히 오르내린다 */
 .fortune-lantern-fire {
-  animation: fortune-flicker 2.4s ease-in-out infinite;
-  transform-origin: center;
+  animation: fortune-glow 6s ease-in-out infinite;
 }
 
-@keyframes fortune-flicker {
-  0%, 100% { opacity: 0.85; transform: scale(1); }
-  30% { opacity: 1; transform: scale(1.06); }
-  55% { opacity: 0.72; transform: scale(0.97); }
-  80% { opacity: 0.95; transform: scale(1.03); }
-}
-
-.fortune-shide {
-  transform-origin: top center;
-  animation: fortune-sway 4s ease-in-out infinite;
-}
-
-@keyframes fortune-sway {
-  0%, 100% { transform: rotate(-3deg); }
-  50% { transform: rotate(3deg); }
+@keyframes fortune-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
 
 /* ---------- 오미쿠지 통 ---------- */
@@ -247,16 +235,38 @@
 /* ---------- 운세 종이 ---------- */
 
 .fortune-paper {
+  --washi-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.36 0 0 0 0 0.2 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   position: relative;
   width: min(92vw, 440px);
   color: var(--ink);
+  filter: drop-shadow(0 14px 16px rgba(0, 0, 0, 0.33));
+}
+
+/* 다 펴진 종이 */
+.fortune-paper-sheet {
+  position: relative;
+  padding: 14px;
+  /* 가장자리가 살짝 말려 각이 조금 둥글다 */
+  border-radius: 4px;
   background-color: var(--washi);
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.36 0 0 0 0 0.2 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    var(--washi-noise),
     repeating-linear-gradient(17deg, rgba(150, 120, 70, 0.05) 0 1px, transparent 1px 23px),
     repeating-linear-gradient(-71deg, rgba(150, 120, 70, 0.04) 0 1px, transparent 1px 31px);
-  padding: 14px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35), 0 2px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+/* 네 변 가장자리가 살짝 말려 올라온 느낌: 끝 단면은 어둡게, 바로 안쪽은 빛을 받아 밝게, 그 안은 휘어진 그늘 */
+.fortune-paper-sheet::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(95, 68, 28, 0.32) 0, rgba(255, 251, 238, 0.75) 4px, rgba(120, 90, 40, 0.14) 11px, rgba(120, 90, 40, 0) 24px),
+    linear-gradient(270deg, rgba(95, 68, 28, 0.32) 0, rgba(255, 251, 238, 0.75) 4px, rgba(120, 90, 40, 0.14) 11px, rgba(120, 90, 40, 0) 24px),
+    linear-gradient(180deg, rgba(95, 68, 28, 0.25) 0, rgba(255, 251, 238, 0.7) 3px, rgba(120, 90, 40, 0.1) 9px, rgba(120, 90, 40, 0) 20px),
+    linear-gradient(0deg, rgba(95, 68, 28, 0.25) 0, rgba(255, 251, 238, 0.7) 3px, rgba(120, 90, 40, 0.1) 9px, rgba(120, 90, 40, 0) 20px);
 }
 
 .fortune-paper-frame {
@@ -274,7 +284,8 @@
 @keyframes fortune-unfold {
   0% { clip-path: inset(0 0 94% 0); transform: translateY(-40px) scaleY(0.9); opacity: 0; }
   15% { clip-path: inset(0 0 94% 0); transform: translateY(0) scaleY(1); opacity: 1; }
-  100% { clip-path: inset(0 0 0 0); transform: translateY(0); opacity: 1; }
+  /* 끝에서는 그림자까지 보이도록 바깥으로 여유를 둔다 */
+  100% { clip-path: inset(-40px -40px -60px -40px); transform: translateY(0); opacity: 1; }
 }
 
 .fortune-strip {
@@ -388,7 +399,6 @@
   .fortune-star,
   .fortune-cloud,
   .fortune-lantern-fire,
-  .fortune-shide,
   .fortune-petal { animation: none !important; }
   .fortune-petal { display: none; }
   .omikuji-box.is-shaking { animation-duration: 0.15s; animation-iteration-count: 2; }

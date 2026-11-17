@@ -43,23 +43,7 @@ export interface FortuneStatsResponse {
   cumulative: FortuneStats;
 }
 
-/** 문구 종류. 새 종류는 문자열만 추가하면 되도록 string을 허용한다. */
-export const PHRASE_TYPES = [
-  { code: 'SUMMARY', label: '총운 문구' },
-  { code: 'MESSAGE_SITUATION', label: '한마디 조각 1 (상황)' },
-  { code: 'MESSAGE_ACTION', label: '한마디 조각 2 (행동)' },
-  { code: 'MESSAGE_RESULT', label: '한마디 조각 3 (결과)' },
-  { code: 'LUCKY_COLOR', label: '행운의 색' },
-  { code: 'LUCKY_ITEM', label: '행운의 아이템' },
-  { code: 'LUCKY_FOOD', label: '행운의 음식' },
-  { code: 'LUCKY_PLACE', label: '행운의 장소' },
-  { code: 'LUCKY_TIME', label: '행운의 시간' },
-  { code: 'LUCKY_DIRECTION', label: '행운의 방향' },
-  { code: 'LUCKY_KEYWORD', label: '행운의 키워드' },
-  { code: 'CAUTION', label: '조심할 것' },
-  { code: 'MISSION', label: '오늘의 미션' },
-] as const;
-
+/** 문구 종류 코드 (SUMMARY, MESSAGE_SITUATION, LUCKY_COLOR 등). 새 종류를 추가할 수 있도록 string */
 export type PhraseType = string;
 
 export interface Phrase {
@@ -69,11 +53,3 @@ export interface Phrase {
   /** 총운 문구(SUMMARY)만 사용 */
   grade: Grade | null;
 }
-
-export type PhraseInput = Omit<Phrase, 'id'>;
-
-export const phraseTypeLabel = (type: string) =>
-  PHRASE_TYPES.find((item) => item.code === type)?.label ?? type;
-
-export const isGrade = (value: unknown): value is Grade =>
-  typeof value === 'string' && (GRADES as readonly string[]).includes(value);

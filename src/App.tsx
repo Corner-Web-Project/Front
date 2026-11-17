@@ -18,7 +18,6 @@ import FindPw from './page/FindPw.tsx'
 import NotFound from './page/NotFound.tsx'
 import Admin from './page/Admin.tsx'
 import Fortune from './page/Fortune.tsx'
-import FortuneAdmin from './page/FortuneAdmin.tsx'
 import Footer from './page/Footer.tsx'
 
 export default function App() {
@@ -46,7 +45,6 @@ export default function App() {
           <Route path='/Admin' element={<Admin/>} />
           <Route path='/Fortune' element={<Fortune/>} />
           <Route path='/Fortune/result/:id' element={<Fortune/>} />
-          <Route path='/Fortune/admin' element={<FortuneAdmin/>} />
           <Route path='/not-found' element={<NotFound/>} />
           <Route path='*' element={<Navigate to='/not-found' />} />
         </Routes>

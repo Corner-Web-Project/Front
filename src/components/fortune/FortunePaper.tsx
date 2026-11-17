@@ -42,76 +42,78 @@ export default function FortunePaper({ result, animate }: FortunePaperProps) {
 
   return (
     <article className={`fortune-paper ${animate ? 'is-unfolding' : ''}`} aria-label={`${result.name}님의 오늘의 운세: ${result.grade}`}>
-      <div className="fortune-paper-frame">
-        {/* 상단 장식 */}
-        <header className="relative mb-2 flex items-center justify-between border-b-2 border-[var(--vermilion)] pb-2">
-          <span className="text-[11px] font-bold tracking-[0.2em] text-[var(--vermilion)]">
-            第<span className="mx-0.5">{result.stickNumber}</span>番
-          </span>
-          <span className="flex items-center gap-2 text-[15px] font-bold tracking-[0.5em] text-[var(--vermilion)]">
-            <svg width="22" height="16" viewBox="0 0 44 32" aria-hidden="true">
-              <path d="M2 6 Q22 0 42 6 L42 9 Q22 3 2 9 Z M6 12 H38 V15 H6 Z M10 8 H14 V32 H10 Z M30 8 H34 V32 H30 Z" fill="currentColor" />
-            </svg>
-            御神籤
-          </span>
-          <span className="text-[11px] tracking-wider text-[var(--vermilion)]">오늘의 운세</span>
-        </header>
-        <div
-          className="mb-3 h-[10px]"
-          aria-hidden="true"
-          style={{
-            background:
-              'radial-gradient(circle at 10px -2px, transparent 7px, var(--vermilion) 7.5px, var(--vermilion) 8.5px, transparent 9px) 0 0 / 20px 10px repeat-x',
-            opacity: 0.6,
-          }}
-        />
-
-        {/* 본문: 좌우 세로 칸 + 가운데 등급 */}
-        <div className="flex items-stretch justify-center border-y border-[rgba(200,54,29,0.45)]" style={{ minHeight: 230 }}>
-          <div className="flex flex-1 flex-row-reverse">
-            {left.map((item) => (
-              <Strip key={item.label} {...item} />
-            ))}
-          </div>
-          <div className="flex w-[118px] shrink-0 flex-col items-center justify-center border-x-2 border-[var(--vermilion)] py-3">
-            <span
-              className="fortune-brush fortune-vertical leading-none"
-              style={{ fontSize: 108, color: isGreat ? 'var(--vermilion)' : 'var(--ink)' }}
-            >
-              {result.grade}
+      <div className="fortune-paper-sheet">
+        <div className="fortune-paper-frame">
+          {/* 상단 장식 */}
+          <header className="relative mb-2 flex items-center justify-between border-b-2 border-[var(--vermilion)] pb-2">
+            <span className="text-[11px] font-bold tracking-[0.2em] text-[var(--vermilion)]">
+              第<span className="mx-0.5">{result.stickNumber}</span>番
             </span>
+            <span className="flex items-center gap-2 text-[15px] font-bold tracking-[0.5em] text-[var(--vermilion)]">
+              <svg width="22" height="16" viewBox="0 0 44 32" aria-hidden="true">
+                <path d="M2 6 Q22 0 42 6 L42 9 Q22 3 2 9 Z M6 12 H38 V15 H6 Z M10 8 H14 V32 H10 Z M30 8 H34 V32 H30 Z" fill="currentColor" />
+              </svg>
+              御神籤
+            </span>
+            <span className="text-[11px] tracking-wider text-[var(--vermilion)]">오늘의 운세</span>
+          </header>
+          <div
+            className="mb-3 h-[10px]"
+            aria-hidden="true"
+            style={{
+              background:
+                'radial-gradient(circle at 10px -2px, transparent 7px, var(--vermilion) 7.5px, var(--vermilion) 8.5px, transparent 9px) 0 0 / 20px 10px repeat-x',
+              opacity: 0.6,
+            }}
+          />
+
+          {/* 본문: 좌우 세로 칸 + 가운데 등급 */}
+          <div className="flex items-stretch justify-center border-y border-[rgba(200,54,29,0.45)]" style={{ minHeight: 230 }}>
+            <div className="flex flex-1 flex-row-reverse">
+              {left.map((item) => (
+                <Strip key={item.label} {...item} />
+              ))}
+            </div>
+            <div className="flex w-[118px] shrink-0 flex-col items-center justify-center border-x-2 border-[var(--vermilion)] py-3">
+              <span
+                className="fortune-brush fortune-vertical leading-none"
+                style={{ fontSize: 108, color: isGreat ? 'var(--vermilion)' : 'var(--ink)' }}
+              >
+                {result.grade}
+              </span>
+            </div>
+            <div className="flex flex-1 flex-row-reverse">
+              {right.map((item) => (
+                <Strip key={item.label} {...item} />
+              ))}
+            </div>
           </div>
-          <div className="flex flex-1 flex-row-reverse">
-            {right.map((item) => (
-              <Strip key={item.label} {...item} />
-            ))}
-          </div>
+
+          {/* 총운 · 한마디 */}
+          <section className="mt-4 space-y-3 text-center">
+            <p className="text-[11px] font-bold tracking-[0.3em] text-[var(--vermilion)]">― 총운 ―</p>
+            <p className="break-keep px-2 text-[16px] font-bold leading-relaxed">{result.summary}</p>
+            <p className="break-keep border-y border-dashed border-[rgba(200,54,29,0.4)] px-2 py-2 text-[14px] leading-relaxed">
+              {result.message}
+            </p>
+          </section>
+
+          <dl className="mt-3 grid grid-cols-2 gap-2 text-[13px]">
+            <div className="border border-[rgba(200,54,29,0.4)] p-2">
+              <dt className="text-[11px] font-bold text-[var(--vermilion)]">조심할 것</dt>
+              <dd className="mt-1 break-keep">{result.caution}</dd>
+            </div>
+            <div className="border border-[rgba(200,54,29,0.4)] p-2">
+              <dt className="text-[11px] font-bold text-[var(--vermilion)]">오늘의 미션</dt>
+              <dd className="mt-1 break-keep">{result.mission}</dd>
+            </div>
+          </dl>
+
+          <footer className="mt-3 flex items-center justify-between text-[11px] text-[rgba(31,21,16,0.7)]">
+            <span>{result.name} 님</span>
+            <span>{formatDate(result.date)}</span>
+          </footer>
         </div>
-
-        {/* 총운 · 한마디 */}
-        <section className="mt-4 space-y-3 text-center">
-          <p className="text-[11px] font-bold tracking-[0.3em] text-[var(--vermilion)]">― 총운 ―</p>
-          <p className="break-keep px-2 text-[16px] font-bold leading-relaxed">{result.summary}</p>
-          <p className="break-keep border-y border-dashed border-[rgba(200,54,29,0.4)] px-2 py-2 text-[14px] leading-relaxed">
-            {result.message}
-          </p>
-        </section>
-
-        <dl className="mt-3 grid grid-cols-2 gap-2 text-[13px]">
-          <div className="border border-[rgba(200,54,29,0.4)] p-2">
-            <dt className="text-[11px] font-bold text-[var(--vermilion)]">조심할 것</dt>
-            <dd className="mt-1 break-keep">{result.caution}</dd>
-          </div>
-          <div className="border border-[rgba(200,54,29,0.4)] p-2">
-            <dt className="text-[11px] font-bold text-[var(--vermilion)]">오늘의 미션</dt>
-            <dd className="mt-1 break-keep">{result.mission}</dd>
-          </div>
-        </dl>
-
-        <footer className="mt-3 flex items-center justify-between text-[11px] text-[rgba(31,21,16,0.7)]">
-          <span>{result.name} 님</span>
-          <span>{formatDate(result.date)}</span>
-        </footer>
       </div>
 
       {result.grade === '흉' && (

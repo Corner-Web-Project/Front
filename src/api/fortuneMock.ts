@@ -1,10 +1,9 @@
 // 백엔드 없이 화면을 확인하기 위한 mock (VITE_FORTUNE_MOCK=true).
 // 실제 서비스에서는 서버가 같은 규칙(이름 + 한국 날짜 시드)으로 뽑는다.
-import { GRADES, type FortuneResult, type FortuneStats, type FortuneStatsResponse, type Grade, type Phrase, type PhraseInput } from '../types/fortune';
+import { GRADES, type FortuneResult, type FortuneStats, type FortuneStatsResponse, type Grade, type Phrase } from '../types/fortune';
 import { ApiError } from './http';
 import { kstDate, pickWeighted, seededRandom } from '../utils/fortuneSeed';
 
-const MOCK_ADMIN_PASSWORD = 'admin';
 const KEY = { results: 'fortuneMock.results', phrases: 'fortuneMock.phrases' };
 
 export const GRADE_WEIGHTS: Record<Grade, number> = { 대길: 8, 중길: 20, 소길: 27, 길: 22, 말길: 13, 흉: 10 };
@@ -120,37 +119,4 @@ export async function getFortuneStats(): Promise<FortuneStatsResponse> {
   const results = load<FortuneResult[]>(KEY.results, () => []);
   const date = kstDate();
   return delay({ date, today: countStats(results.filter((r) => r.date === date)), cumulative: countStats(results) });
-}
-
-function checkPassword(password: string) {
-  if (password !== MOCK_ADMIN_PASSWORD) throw new ApiError(401, '관리자 비밀번호가 올바르지 않습니다.');
-}
-
-export async function getPhrases(password: string, type?: string): Promise<Phrase[]> {
-  checkPassword(password);
-  const phrases = load(KEY.phrases, defaultPhrases);
-  return delay(type ? phrases.filter((p) => p.type === type) : phrases);
-}
-
-export async function createPhrase(password: string, input: PhraseInput): Promise<Phrase> {
-  checkPassword(password);
-  const phrases = load(KEY.phrases, defaultPhrases);
-  const phrase = { ...input, id: Math.max(0, ...phrases.map((p) => p.id)) + 1 };
-  save(KEY.phrases, [...phrases, phrase]);
-  return delay(phrase);
-}
-
-export async function updatePhrase(password: string, id: number, input: PhraseInput): Promise<Phrase> {
-  checkPassword(password);
-  const phrases = load(KEY.phrases, defaultPhrases);
-  if (!phrases.some((p) => p.id === id)) throw new ApiError(404, '문구를 찾을 수 없습니다.');
-  const phrase = { ...input, id };
-  save(KEY.phrases, phrases.map((p) => (p.id === id ? phrase : p)));
-  return delay(phrase);
-}
-
-export async function deletePhrase(password: string, id: number): Promise<void> {
-  checkPassword(password);
-  save(KEY.phrases, load(KEY.phrases, defaultPhrases).filter((p) => p.id !== id));
-  await delay(undefined);
 }

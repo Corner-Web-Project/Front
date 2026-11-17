@@ -1,15 +1,17 @@
 # 오미쿠지 운세 — 프론트가 기대하는 백엔드 API
 
-프론트 구현: `src/page/Fortune.tsx`, `src/page/FortuneAdmin.tsx`, `src/api/fortune.ts`
-화면 경로: `/Fortune`, `/Fortune/result/:id`(공유 링크), `/Fortune/admin`(문구 관리)
+프론트 구현: `src/page/Fortune.tsx`, `src/api/fortune.ts`
+화면 경로: `/Fortune`, `/Fortune/result/:id`(공유 링크)
+
+> 문구 관리자 페이지는 사이트 전체 관리자와 상의한 뒤 정하기로 해서 이번 프론트에서 제외했다.
 
 백엔드 없이 화면을 확인하려면 `.env.local`에 `VITE_FORTUNE_MOCK=true`를 넣고 Vite를 재시작한다.
-mock 모드는 브라우저 localStorage에 기록하며, 관리자 비밀번호는 `admin`이다.
+mock 모드는 브라우저 localStorage에 기록한다.
 
 ## 공통
 
 - 기본 주소는 기존과 같이 `VITE_API_BASE_URL`을 쓴다.
-- 요청·응답은 JSON이다. 오류는 HTTP 상태 코드로 구분한다. 프론트는 400, 401, 404를 따로 처리한다.
+- 요청·응답은 JSON이다. 오류는 HTTP 상태 코드로 구분한다. 프론트는 404(결과 없음)를 따로 처리한다.
 - 등급 값은 한글 문자열 `대길 | 중길 | 소길 | 길 | 말길 | 흉`이다.
 
 ## 1. 뽑기 — `POST /api/fortunes`
@@ -67,25 +69,9 @@ mock 모드는 브라우저 localStorage에 기록하며, 관리자 비밀번호
 }
 ```
 
-## 4. 관리자 문구 관리 — `/api/admin/fortune-phrases`
+## 4. 문구 데이터
 
-- 모든 요청에 `X-Admin-Password: <비밀번호>` 헤더를 붙인다. 서버는 설정 파일의 값(예: `fortune.admin-password`)과 비교한다. 틀리거나 없으면 `401`을 보낸다.
-- 프론트는 401을 받으면 잠금 화면으로 돌아간다.
-- CORS 허용 헤더에 `X-Admin-Password`, 허용 메서드에 `PUT`, `DELETE`를 추가해야 한다.
-
-| 메서드 | 경로 | 요청 | 응답 |
-| --- | --- | --- | --- |
-| GET | `/api/admin/fortune-phrases?type=LUCKY_COLOR` (type 생략 시 전체) | – | `Phrase[]` |
-| POST | `/api/admin/fortune-phrases` | `PhraseInput` | `Phrase` (201 또는 200) |
-| PUT | `/api/admin/fortune-phrases/{id}` | `PhraseInput` | `Phrase` |
-| DELETE | `/api/admin/fortune-phrases/{id}` | – | 204 |
-
-```json
-// Phrase
-{ "id": 1, "type": "SUMMARY", "content": "하늘이 돕는 날.", "grade": "대길" }
-// PhraseInput (grade는 SUMMARY일 때만 값, 나머지는 null)
-{ "type": "LUCKY_COLOR", "content": "주홍", "grade": null }
-```
+문구와 행운 요소는 DB 문구 테이블에 "종류" 칸으로 구분해 저장한다. 관리 방식(관리자 화면, API)은 추후 결정한다.
 
 문구 종류 코드:
 
@@ -96,7 +82,7 @@ mock 모드는 브라우저 localStorage에 기록하며, 관리자 비밀번호
 | 행운 요소 | `LUCKY_COLOR`, `LUCKY_ITEM`, `LUCKY_FOOD`, `LUCKY_PLACE`, `LUCKY_TIME`, `LUCKY_DIRECTION`, `LUCKY_KEYWORD` |
 | 기타 | `CAUTION`, `MISSION` |
 
-새 종류(예: `LUCKY_ANIMAL`)는 관리자 화면에서 코드만 입력해 추가할 수 있다. 테이블 구조는 바꾸지 않는다.
+새 종류(예: `LUCKY_ANIMAL`)는 테이블 구조를 바꾸지 않고 행만 추가하면 된다.
 다만 운세 종이에 표시하려면 응답 필드와 `FortunePaper.tsx`에 칸을 추가해야 한다.
 
 ## 기본 데이터

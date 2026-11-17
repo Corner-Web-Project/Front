@@ -30,8 +30,8 @@ export default function Fortune() {
   return (
     <div className="fortune relative min-h-[calc(100vh-80px)] overflow-hidden" data-sky={sky.isLight ? 'light' : 'dark'}>
       <SkyBackground sky={sky} />
-      <Shimenawa />
-      <div className="relative z-10 flex flex-col items-center px-4 pb-40 pt-24" style={{ color: 'var(--fg)' }}>
+      <Shimenawa lanternLight={sky.lanterns} />
+      <div className="relative z-10 flex flex-col items-center px-4 pb-40 pt-28" style={{ color: 'var(--fg)' }}>
         {sharedId ? (
           <SharedResult key={sharedId} id={sharedId} onDrawAgain={() => navigate('/Fortune')} />
         ) : (
