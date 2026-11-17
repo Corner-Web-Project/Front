@@ -8,6 +8,23 @@
   --washi: #f6efdc;
   --ink: #1f1510;
   font-family: 'Noto Serif KR', serif;
+  /* 글자·그림이 드래그(선택)되지 않게 */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* 링크·그림을 끌어서 옮기지 못하게 */
+.fortune a,
+.fortune img,
+.fortune svg {
+  -webkit-user-drag: none;
+}
+
+/* 이름 입력칸과 공유 링크 칸은 입력·복사를 위해 선택 가능하게 둔다 */
+.fortune input {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 .fortune[data-sky='light'] {
