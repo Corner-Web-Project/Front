@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { apiUrl, getApiBaseUrl } from "../api/config";
 import { projectImageUrl } from "../api/http";
+import { useAuth } from "../context/auth";
 
 import githubLogo from "../assets/home/githubLogo.png";
 
@@ -31,6 +32,9 @@ async function fetchPeople(signal?: AbortSignal): Promise<People[]> {
 }
 
 export default function Home() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "ADMIN";
+
   const [displayText, setDisplayText] = useState("");
 
   // People 목록
@@ -402,16 +406,18 @@ export default function Home() {
           PEOPLE
         </h2>
 
-        <div className="mx-auto mt-10 flex max-w-6xl justify-end px-6">
-          <button
-            type="button"
-            className={buttonClass}
-            onClick={handleAdd}
-            disabled={isAdding}
-          >
-            멤버 추가
-          </button>
-        </div>
+        {isAdmin && (
+          <div className="mx-auto mt-10 flex max-w-6xl justify-end px-6">
+            <button
+              type="button"
+              className={buttonClass}
+              onClick={handleAdd}
+              disabled={isAdding}
+            >
+              멤버 추가
+            </button>
+          </div>
+        )}
 
         {message && (
           <p className="mt-4 text-center text-sm text-[#014BAA]">
@@ -421,7 +427,7 @@ export default function Home() {
 
         <div className="mx-auto mb-60 mt-12 grid max-w-6xl grid-cols-1 justify-items-center gap-x-8 gap-y-20 px-6 sm:grid-cols-2 md:grid-cols-3">
           {/* 새 멤버 입력 카드 */}
-          {isAdding && (
+          {isAdmin && isAdding && (
             <div className="flex w-48 flex-col items-center">
               <div className="flex h-35 w-35 items-center justify-center rounded-full border border-dashed border-[#014BAA]/50 bg-[#ECEAE9] text-sm text-[#014BAA]">
                 새 멤버
@@ -479,7 +485,7 @@ export default function Home() {
 
           {/* 기존 멤버 카드 */}
           {peopleList.map((people) => {
-            const isEditing = editingId === people.peopleId;
+            const isEditing = isAdmin && editingId === people.peopleId;
 
             return (
               <div
@@ -543,24 +549,26 @@ export default function Home() {
                   </form>
                 ) : (
                   <>
-                    {/* 이미지와 멤버 정보 사이의 버튼 */}
-                    <div className="mt-3 flex gap-2">
-                      <button
-                        type="button"
-                        className={buttonClass}
-                        onClick={() => handleEdit(people)}
-                      >
-                        수정
-                      </button>
+                    {/* 관리자만 수정 및 삭제 가능 */}
+                    {isAdmin && (
+                      <div className="mt-3 flex gap-2">
+                        <button
+                          type="button"
+                          className={buttonClass}
+                          onClick={() => handleEdit(people)}
+                        >
+                          수정
+                        </button>
 
-                      <button
-                        type="button"
-                        className={buttonClass}
-                        onClick={() => handleDelete(people)}
-                      >
-                        삭제
-                      </button>
-                    </div>
+                        <button
+                          type="button"
+                          className={buttonClass}
+                          onClick={() => handleDelete(people)}
+                        >
+                          삭제
+                        </button>
+                      </div>
+                    )}
 
                     {/* 기존 멤버 정보 */}
                     <div className="mt-3 w-30 rounded-xl border border-[#014BAA] bg-[#ECEAE9] p-1 text-center text-[#014BAA]">

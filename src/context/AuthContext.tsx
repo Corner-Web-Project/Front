@@ -3,14 +3,20 @@ import { getMyMember, type Member } from "../api/member"
 import { AuthContext } from "./auth"
 
 type User = {
+  memberId: number
   id: string
   name: string
-  role: Member['role']
+  role: Member["role"]
 }
 
 const ACCESS_TOKEN_KEY = "accessToken"
 
-const toUser = (member: Member): User => ({ id: member.studentId, name: member.name, role: member.role })
+const toUser = (member: Member): User => ({
+  memberId: member.memberId,
+  id: member.studentId,
+  name: member.name,
+  role: member.role,
+})
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)

@@ -1,3 +1,6 @@
+import { apiUrl } from './config';
+import { bearerAuthHeader } from './http';
+
 interface JoinApplication {
   name: string;
   studentId: string;
@@ -38,4 +41,79 @@ export async function submitJoinApplication(url: string, application: JoinApplic
   if (!result || !Number.isSafeInteger(result.joinId) || result.joinId <= 0) {
     throw new Error('가입 신청 저장 결과를 확인하지 못했습니다. 백엔드 주소와 서버 응답을 확인해주세요.');
   }
+}
+
+// 가입 신청 심사 상태
+export type JoinStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+// 가입 신청 목록 / 상세 응답 (운영진 전용)
+export interface JoinApplicationSummary {
+  joinId: number;
+  name: string;
+  studentId: string;
+  major: string;
+  status: JoinStatus;
+  createdAt: string;
+}
+
+export interface JoinApplicationDetail extends JoinApplicationSummary {
+  phone: string;
+  motivation: string;
+  portfolioUrl: string | null;
+  comment: string;
+}
+
+interface JoinApplicationPageResponse {
+  applications: JoinApplicationSummary[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+// 403 / 404 이면 서버가 보낸 사유를, 아니면 기본 메시지를 사용
+async function getAdminErrorMessage(response: Response, defaultMessage: string): Promise<string> {
+  if (![403, 404].includes(response.status)) return defaultMessage;
+  const error = await response.json().catch(() => null);
+  return error?.message || defaultMessage;
+}
+
+function adminAuthHeader() {
+  return bearerAuthHeader(localStorage.getItem('accessToken'));
+}
+
+// 가입 신청 목록 (최신순). 운영진이 아니면 403
+export async function getJoinApplications(): Promise<JoinApplicationSummary[]> {
+  // TODO: 신청이 많아지면 페이지네이션 UI 추가
+  const response = await fetch(apiUrl('/api/join-applications?page=0&size=100'), { headers: adminAuthHeader() });
+  if (!response.ok) throw new Error(await getAdminErrorMessage(response, '가입 신청 목록을 불러오지 못했습니다.'));
+  const data: JoinApplicationPageResponse = await response.json();
+  return data.applications;
+}
+
+// 가입 신청 상세 (연락처, 지원동기 등 포함)
+export async function getJoinApplication(joinId: number): Promise<JoinApplicationDetail> {
+  const response = await fetch(apiUrl(`/api/join-applications/${joinId}`), { headers: adminAuthHeader() });
+  if (!response.ok) throw new Error(await getAdminErrorMessage(response, '가입 신청을 불러오지 못했습니다.'));
+  return response.json();
+}
+
+// 가입 신청 심사 상태 변경 (승인 등)
+export async function updateJoinApplicationStatus(joinId: number, status: JoinStatus): Promise<JoinApplicationDetail> {
+  const response = await fetch(apiUrl(`/api/join-applications/${joinId}`), {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...adminAuthHeader() },
+    body: JSON.stringify({ status }),
+  });
+  if (!response.ok) throw new Error(await getAdminErrorMessage(response, '가입 신청 상태 변경에 실패했습니다.'));
+  return response.json();
+}
+
+// 가입 신청 삭제
+export async function deleteJoinApplication(joinId: number): Promise<void> {
+  const response = await fetch(apiUrl(`/api/join-applications/${joinId}`), {
+    method: 'DELETE',
+    headers: adminAuthHeader(),
+  });
+  if (!response.ok) throw new Error(await getAdminErrorMessage(response, '가입 신청 삭제에 실패했습니다.'));
 }

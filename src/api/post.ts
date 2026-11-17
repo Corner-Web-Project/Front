@@ -17,6 +17,7 @@ interface PostSummaryResponse {
 
 interface PostDetailResponse extends PostSummaryResponse {
   content: string;
+  authorId: number;
   updateDate: string;
 }
 
@@ -85,6 +86,9 @@ export const getPost = async (id: string): Promise<Post | null> => {
   return {
     ...toPost(data, data.isPinned ? '-' : ''),
     paragraphs: data.content.split('\n').filter((line) => line.trim() !== ''),
+    content: data.content,
+    authorId: data.authorId,
+    isPinned: data.isPinned,
   };
 };
 
@@ -107,8 +111,53 @@ export const createPost = async (post: {
       content: post.content,
     }),
   });
+  if (response.status === 403) throw new Error('공지사항 / FAQ 작성은 운영진만 할 수 있습니다.');
   if (!response.ok) throw new Error('게시글 등록에 실패했습니다.');
 
   const data: PostDetailResponse = await response.json();
   return String(data.postId);
+};
+
+// 403(권한 없음)이면 서버가 보낸 사유를, 아니면 기본 메시지를 사용
+const getErrorMessage = async (response: Response, defaultMessage: string) => {
+  if (response.status !== 403) return defaultMessage;
+  const error = await response.json().catch(() => null);
+  return error?.message || defaultMessage;
+};
+
+// 수정. 작성자 본인 또는 운영진만 가능 (아니면 403)
+export const updatePost = async (
+  id: string,
+  post: {
+    category: Post['category'];
+    title: string;
+    content: string;
+    isPinned: boolean;
+  }
+): Promise<void> => {
+  const authHeader = bearerAuthHeader(localStorage.getItem('accessToken'));
+  const response = await fetch(apiUrl(`/api/posts/${encodeURIComponent(id)}`), {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeader,
+    },
+    body: JSON.stringify({
+      category: CATEGORY_CODE[post.category],
+      title: post.title,
+      content: post.content,
+      isPinned: post.isPinned,
+    }),
+  });
+  if (!response.ok) throw new Error(await getErrorMessage(response, '게시글 수정에 실패했습니다.'));
+};
+
+// 삭제. 작성자 본인 또는 운영진만 가능 (아니면 403)
+export const deletePost = async (id: string): Promise<void> => {
+  const authHeader = bearerAuthHeader(localStorage.getItem('accessToken'));
+  const response = await fetch(apiUrl(`/api/posts/${encodeURIComponent(id)}`), {
+    method: 'DELETE',
+    headers: authHeader,
+  });
+  if (!response.ok) throw new Error(await getErrorMessage(response, '게시글 삭제에 실패했습니다.'));
 };

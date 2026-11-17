@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Pencil } from 'lucide-react'; // 글쓰기 버튼 아이콘용
 import { type Post } from '../types/types';
 import { getPosts } from '../api/post';
+import { useAuth } from '../context/auth';
 
 type CategoryFilter = '전체' | '공지사항' | 'FAQ' | '질문';
 
 const NoticePage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('전체');
   const [result, setResult] = useState<{ category: CategoryFilter; posts: Post[]; error: string } | null>(null);
 
@@ -45,12 +47,18 @@ const NoticePage: React.FC = () => {
     }
   };
 
+  // 비로그인 상태면 안내 후 로그인 페이지로 이동
   const handleWriteClick = () => {
+    if (!user) {
+      alert('로그인 후 게시글을 작성해주세요.');
+      navigate('/SignIn');
+      return;
+    }
     navigate('/Notice/write');
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#333333] font-sans antialiased relative pb-20">
+    <div className="min-h-screen bg-[#F8F3F0] text-[#333333] font-sans antialiased relative pb-20">
       {/* 1. 타이틀 섹션 (상단 마진을 mt-12로 다소 조정하여 공통 헤더와의 간격을 최적화) */}
       <main className="max-w-5xl mx-auto px-4 pt-12">
         <section className="text-center mb-12">
@@ -64,10 +72,10 @@ const NoticePage: React.FC = () => {
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all shadow-sm ${
+              className={`rounded-md border border-[#014BAA] px-3 py-1 text-sm transition ${
                 selectedCategory === category
-                  ? 'bg-[#3B82F6] text-white ring-2 ring-blue-300'
-                  : 'bg-[#E5E7EB] text-[#4B5563] hover:bg-gray-300'
+                  ? 'bg-[#014BAA] text-white'
+                  : 'text-[#014BAA] hover:bg-[#014BAA] hover:text-white'
               }`}
             >
               {category}
@@ -101,7 +109,7 @@ const NoticePage: React.FC = () => {
                     onClick={() => navigate(`/Notice/${post.id}`)}
                     className="border-b border-gray-200 text-sm hover:bg-gray-50/50 transition cursor-pointer"
                   >
-                    <td className="py-4 text-center text-[#9CA3AF]">{post.no}</td>
+                    <td className="py-4 text-center text-[#4B5563] text-xs font-medium">{post.no}</td>
                     <td className="py-4 text-center">
                       <span className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-semibold tracking-wide ${getCategoryBadgeStyle(post.category)}`}>
                         {post.category}
@@ -110,8 +118,8 @@ const NoticePage: React.FC = () => {
                     <td className="py-4 pl-4 font-medium text-[#1F2937] hover:text-blue-600 transition">
                       {post.title}
                     </td>
-                    <td className="py-4 text-center text-[#D1D5DB] text-xs font-light">{post.author}</td>
-                    <td className="py-4 text-center text-[#D1D5DB] text-xs font-light">{post.createdAt}</td>
+                    <td className="py-4 text-center text-[#4B5563] text-xs font-medium">{post.author}</td>
+                    <td className="py-4 text-center text-[#4B5563] text-xs font-medium">{post.createdAt}</td>
                   </tr>
                 ))
               )}
@@ -123,11 +131,11 @@ const NoticePage: React.FC = () => {
       {/* 4. 우측 하단 글쓰기 플로팅 버튼 */}
       <button
         onClick={handleWriteClick}
-        className="fixed bottom-8 right-8 flex items-center space-x-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white px-5 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 z-50 group"
+        className="fixed bottom-8 right-8 z-50 flex items-center gap-1.5 rounded-md border border-[#014BAA] bg-white px-3 py-1 text-sm text-[#014BAA] shadow-md transition hover:bg-[#014BAA] hover:text-white"
         aria-label="글쓰기"
       >
-        <Pencil className="w-5 h-5 group-hover:rotate-12 transition-transform duration-200" />
-        <span className="font-medium text-sm">글쓰기</span>
+        <Pencil className="w-4 h-4" />
+        <span>글쓰기</span>
       </button>
     </div>
   );
