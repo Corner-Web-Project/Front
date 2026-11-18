@@ -31,6 +31,13 @@ export default function Nav(){
             `
           }>Project</NavLink>
         <NavLink 
+          to="/ITNews" 
+          className={({ isActive }) => 
+            `transition duration-250 ease-linear mr-[2.24vw]
+            ${isActive ? 'border-b-1 hover:scale-110 text-[#014BAA] font-medium' : 'hover:text-[#014BAA] hover:scale-110 hover:font-medium hover:border-b-1'}
+            `
+          }>IT News</NavLink>
+        <NavLink 
           to="/Notice" 
           className={({ isActive }) => 
             `transition duration-250 ease-linear mr-[2.24vw]
