@@ -18,12 +18,6 @@ const categories: { label: string; value: NewsTab }[] = [
     { label: "게임", value: "GAME" },
 ];
 
-const categoryLabels: Record<NewsCategory, string> = {
-    AI: "AI",
-    IT_COMPANY: "IT기업",
-    GAME: "게임",
-};
-
 // 백엔드 연동 전 사용할 임시 데이터
 const mockNews: News[] = Array.from({ length: 36 }, (_, index) => {
     const category = categories[
@@ -34,7 +28,11 @@ const mockNews: News[] = Array.from({ length: 36 }, (_, index) => {
 
     return {
         id: index + 1,
-        title: `기사 제목 ${articleIndex + 1}`,
+        title: `${
+            category === "AI" ? "AI" 
+            : category === "IT_COMPANY" ? "IT기업" 
+            : "게임"
+        } 기사 제목 ${articleIndex + 1}`,
         category,
         publishedAt: `2026-11-${String(
             17 - Math.floor(articleIndex / 3)
@@ -84,36 +82,43 @@ export default function ItNews() {
                             IT NEWS
                         </h2>
                     </div>
-
-                    <span className="text-xs text-[#014BAA]/50">
-                        Daum IT/과학
-                    </span>
                 </div>
 
+                
                 {/* 카테고리 탭 */}
-                <div
-                    className="mb-10 flex flex-wrap gap-3 border-b border-[#014BAA]/15 pb-5"
-                    role="group"
-                    aria-label="뉴스 카테고리"
-                >
-                    {categories.map((category) => {
-                        const isActive =
-                            activeTab === category.value;
+                <div className="mb-10 border-b border-[#014BAA]/15 pb-5">
+                    <div className="flex flex-wrap items-end justify-between gap-3">
 
-                        return (
-                            <button
-                                key={category.value}
-                                type="button"
-                                onClick={() => setActiveTab(category.value)}
-                                aria-pressed={isActive}
-                                className={`rounded-md border border-[#014BAA] px-3 py-1 text-sm text-[#014BAA] transition hover:bg-[#014BAA] hover:text-white ${
-                                    isActive ? "bg-[#014BAA] !text-white" : ""
-                                }`}
-                            >
-                                {category.label}
-                            </button>
-                        );
-                    })}
+                        {/* 카테고리 버튼 */}
+                        <div
+                            className="flex flex-wrap gap-3"
+                            role="group"
+                            aria-label="뉴스 카테고리"
+                        >
+                            {categories.map((category) => {
+                                const isActive = activeTab === category.value;
+
+                                return (
+                                    <button
+                                        key={category.value}
+                                        type="button"
+                                        onClick={() => setActiveTab(category.value)}
+                                        aria-pressed={isActive}
+                                        className={`rounded-md border border-[#014BAA] px-3 py-1 text-sm text-[#014BAA] transition hover:bg-[#014BAA] hover:text-white ${
+                                            isActive ? "bg-[#014BAA] !text-white" : ""
+                                        }`}
+                                    >
+                                        {category.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {/* 뉴스 출처 */}
+                        <span className="text-xs text-[#014BAA]/50">
+                            Daum IT/과학
+                        </span>
+                    </div>
                 </div>
 
                 {/* 뉴스 카드 */}
@@ -133,13 +138,8 @@ export default function ItNews() {
                                     )}
                                 </div>
 
-                                {/* 카테고리 */}
-                                <p className="mt-4 text-xs font-medium text-[#014BAA]/60">
-                                    {categoryLabels[news.category]}
-                                </p>
-
                                 {/* 제목 */}
-                                <h3 className="mt-2 line-clamp-2 text-base font-semibold leading-relaxed text-[#014BAA]">
+                                <h3 className="mt-2 line-clamp-2 text-base font-semibold leading-relaxed text-[#475569]">
                                     {news.title}
                                 </h3>
 
