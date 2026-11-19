@@ -7,6 +7,7 @@ import Schedule from './page/Schedule.tsx'
 import Projectup from './page/Projectup.tsx'
 import Project from './page/Project.tsx'
 import ProjectDetail from "./page/ProjectDetail";
+import ITNews from "./page/ITNews";
 import Notice from './page/Notice.tsx'
 import NoticeDetail from './page/NoticeDetail.tsx'
 import NoticeWrite from './page/NoticeWrite.tsx'
@@ -32,6 +33,7 @@ export default function App() {
           <Route path='/Projectup' element={<Projectup/>} />
           <Route path='/Project' element={<Project/>}/>
           <Route path='/Project/:id' element={<ProjectDetail />} />
+          <Route path="/ITNews" element={<ITNews />} />
           <Route path='/Notice' element={<Notice/>} />
           <Route path='/Notice/write' element={<NoticeWrite/>} />
           <Route path='/Notice/:id' element={<NoticeDetail/>} />
