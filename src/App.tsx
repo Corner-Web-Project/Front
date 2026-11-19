@@ -20,6 +20,7 @@ import NotFound from './page/NotFound.tsx'
 import Admin from './page/Admin.tsx'
 import Fortune from './page/Fortune.tsx'
 import Footer from './page/Footer.tsx'
+import MyPage from './page/MyPage.tsx'
 
 export default function App() {
   return (
@@ -45,6 +46,7 @@ export default function App() {
           <Route path='/SignIn/FindID' element={<FindId/>} />
           <Route path='/SignIn/FindPW' element={<FindPw/>} />
           <Route path='/Admin' element={<Admin/>} />
+          <Route path='/MyPage' element={<MyPage/>} />
           <Route path='/Fortune' element={<Fortune/>} />
           <Route path='/Fortune/result/:id' element={<Fortune/>} />
           <Route path='/not-found' element={<NotFound/>} />

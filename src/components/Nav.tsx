@@ -1,9 +1,10 @@
 import { Link, NavLink } from 'react-router';
 import { useAuth } from "../context/auth"
+import AccountMenu from './AccountMenu';
 
 
 export default function Nav(){
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
 
   return(
     <nav className='w-full h-[80px] flex justify-around items-center text-[1.05vw] text-[rgba(1,75,170,0.73)] '>
@@ -67,22 +68,7 @@ export default function Nav(){
               프로젝트 등록
             </NavLink>
           )}
-          <span className="text-[#014BAA] font-medium mr-3">
-            {user.name}님
-          </span>
-
-          <button
-            onClick={logout}
-            className="
-              border-l border-[#014BAA]/20
-              pl-3
-              text-[#014BAA]/55
-              transition duration-200
-              hover:text-[#014BAA]
-            "
-          >
-            logout
-          </button>
+          <AccountMenu />
 
           {/* 운영진(ADMIN)만 관리자 페이지 이동 버튼 표시 */}
           {user.role === "ADMIN" && (

@@ -56,9 +56,10 @@ export const createToken = async (login: {
 };
 
 // 로그인한 회원 정보. 토큰이 없거나 만료되면 401
-export const getMyMember = async (accessToken: string): Promise<Member> => {
+export const getMyMember = async (accessToken: string, signal?: AbortSignal): Promise<Member> => {
   const response = await fetch(apiUrl('/api/members/me'), {
     headers: bearerAuthHeader(accessToken),
+    signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(15000)]) : AbortSignal.timeout(15000),
   });
   if (!response.ok) throw new Error('로그인 정보를 확인할 수 없습니다.');
   return response.json();
