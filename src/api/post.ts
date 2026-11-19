@@ -76,6 +76,28 @@ export const getPosts = async (category?: Post['category']): Promise<Post[]> => 
   );
 };
 
+// 로그인한 회원의 글만 페이지별로 조회한다.
+export interface MyPostsPage {
+  posts: Post[];
+  totalElements: number;
+  totalPages: number;
+}
+
+export const getMyPosts = async (accessToken: string, page: number, signal: AbortSignal): Promise<MyPostsPage> => {
+  const params = new URLSearchParams({ page: String(page), size: '5' });
+  const response = await fetch(apiUrl(`/api/posts/me?${params}`), {
+    headers: bearerAuthHeader(accessToken),
+    signal: AbortSignal.any([signal, AbortSignal.timeout(15000)]),
+  });
+  if (!response.ok) throw new Error('내가 쓴 글을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.');
+  const data: PostPageResponse = await response.json();
+  return {
+    posts: data.posts.map((post) => toPost(post, '')),
+    totalElements: data.totalElements,
+    totalPages: data.totalPages,
+  };
+};
+
 // 상세 조회. 없는 글이면 null
 export const getPost = async (id: string): Promise<Post | null> => {
   const response = await fetch(apiUrl(`/api/posts/${encodeURIComponent(id)}`));

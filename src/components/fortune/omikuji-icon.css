@@ -1,0 +1,43 @@
+.omikuji-icon {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.omikuji-icon__stick {
+  position: absolute;
+  top: 5%;
+  height: 43%;
+  border-left: var(--omikuji-stroke, 1.5px) solid currentColor;
+  transform-origin: bottom;
+}
+
+.omikuji-icon__stick--left { left: 34%; transform: rotate(-15deg); }
+.omikuji-icon__stick--middle { left: 50%; top: 0; height: 48%; }
+.omikuji-icon__stick--right { left: 66%; transform: rotate(15deg); }
+
+.omikuji-icon__barrel {
+  position: absolute;
+  inset: 40% 15% 2%;
+  border: var(--omikuji-stroke, 1.5px) solid currentColor;
+  border-radius: 12% 12% 24% 24%;
+  background: linear-gradient(to right, transparent 30%, currentColor 30%, currentColor 36%, transparent 36%, transparent 64%, currentColor 64%, currentColor 70%, transparent 70%);
+}
+
+.omikuji-icon__barrel::after {
+  content: '';
+  position: absolute;
+  top: 65%;
+  left: 0;
+  right: 0;
+  border-top: var(--omikuji-stroke, 1.5px) solid currentColor;
+}
+
+.omikuji-icon__rim {
+  position: absolute;
+  inset: 34% 15% auto;
+  height: 15%;
+  border: var(--omikuji-stroke, 1.5px) solid currentColor;
+  border-radius: 50%;
+}

@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useCallback } from "react";
 import { getProject, projectImage } from "../api/projects";
 import { ApiError } from "../api/http";
@@ -31,6 +32,7 @@ export default function ProjectDetail() {
 
   return (
     <div className="mx-auto max-w-5xl p-10">
+      <Link to={`/Project?generation=${project.generation}`} className="mb-6 inline-block text-[#014BAA] underline">프로젝트 목록으로</Link>
 
       {/* 프로젝트 제목 */}
       <div className="mb-10">
@@ -65,13 +67,18 @@ export default function ProjectDetail() {
           프로젝트 설명
         </h2>
 
-        <p className="leading-8 text-gray-700">
+        <p className="whitespace-pre-wrap break-words leading-8 text-gray-700">
           {project.description}
         </p>
 
       </div>
 
       {/* 팀원 */}
+      {project.stacks.length > 0 && <section className="mt-8 rounded-2xl border p-6 shadow-sm">
+        <h2 className="mb-4 text-2xl font-bold text-[#014BAA]">기술 스택</h2>
+        <div className="flex flex-wrap gap-2">{project.stacks.map((stack, index) =>
+          <span key={index} className="rounded-full bg-blue-50 px-4 py-2 text-[#014BAA]">{stack}</span>)}</div>
+      </section>}
       <div className="mt-8 rounded-2xl border p-6 shadow-sm">
 
         <h2 className="mb-5 text-2xl font-bold text-[#014BAA]">
