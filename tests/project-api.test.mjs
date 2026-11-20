@@ -28,6 +28,10 @@ test('configuration requires an explicit URL and HTTPS in production', () => {
   assert.equal(apiBaseUrl('http://localhost:8080/', false), 'http://localhost:8080');
   assert.throws(() => apiBaseUrl(undefined, true));
   assert.throws(() => apiBaseUrl('http://localhost:8080', true));
+  for (const host of ['localhost', 'api.localhost', '127.0.0.1', '127.1', '[::1]', '0.0.0.0']) {
+    assert.throws(() => apiBaseUrl(`https://${host}`, true), /로컬 주소/);
+  }
+  assert.equal(apiBaseUrl('https://api.example.invalid/', true), 'https://api.example.invalid');
   assert.throws(() => apiBaseUrl('https://user:password@example.invalid', true));
 });
 

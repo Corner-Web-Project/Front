@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { getProject, projectImage } from "../api/projects";
 import { ApiError } from "../api/http";
 import { useApiQuery } from "../hooks/useApiQuery";
+import ProjectImage from "../components/ProjectImage";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -52,11 +53,12 @@ export default function ProjectDetail() {
       </div>
 
       {/* 대표 배너 */}
-      {project.banner ? <img
-        src={projectImage(project.banner)}
+      <ProjectImage
+        src={project.banner ? projectImage(project.banner) : undefined}
         alt={project.title}
         className="mb-10 h-[350px] w-full rounded-2xl object-cover shadow-lg"
-      /> : <div aria-label="대표 이미지 없음" className="mb-10 h-[350px] w-full rounded-2xl bg-gray-100 shadow-lg" />}
+        placeholder="대표 이미지 없음"
+      />
 
       
 

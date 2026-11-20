@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import type { ProjectSummary } from "../types/project";
 import { projectImage } from "../api/projects";
+import ProjectImage from "./ProjectImage";
 
 
 interface ProjectCardProps {
@@ -13,21 +14,23 @@ export default function ProjectCard({
   return (
     <Link to={`/project/${project.projectId}`}>
   <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-[#014BAA]">
-    {project.banner ? <img
-      src={projectImage(project.banner)}
+    <ProjectImage
+      src={project.banner ? projectImage(project.banner) : undefined}
       alt={project.title}
       className="aspect-video w-full object-cover"
-    /> : <div aria-label="대표 이미지 없음" className="aspect-video w-full bg-gray-100" />}
+      placeholder="대표 이미지 없음"
+    />
 
     <div className="p-5">
 
       <div className="mb-4 flex items-center gap-3">
 
-        {project.logo ? <img
-          src={projectImage(project.logo)}
+        <ProjectImage
+          src={project.logo ? projectImage(project.logo) : undefined}
           alt={project.title}
           className="h-12 w-12 rounded-full border object-cover"
-        /> : <div aria-label="로고 없음" className="h-12 w-12 rounded-full border bg-gray-100" />}
+          placeholder="로고 없음"
+        />
 
         <div>
 
