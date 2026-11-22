@@ -143,12 +143,20 @@ export default function ItNews() {
                                     {news.title}
                                 </h3>
 
-                                {/* 날짜 */}
+                                
+                                {/* 날짜 및 상대 시간 */}
                                 <time
                                     dateTime={news.publishedAt}
                                     className="mt-2 block text-xs text-gray-400"
                                 >
                                     {formatRelativeDate(news.publishedAt)}
+                                    {" · "}
+                                    {new Date(news.publishedAt).toLocaleDateString("ko-KR", {
+                                        year: "numeric",
+                                        month: "2-digit",
+                                        day: "2-digit",
+                                        timeZone: "Asia/Seoul",
+                                    }).replace(/\.\s*/g, ".").replace(/\.$/, "")}
                                 </time>
                             </>
                         );
