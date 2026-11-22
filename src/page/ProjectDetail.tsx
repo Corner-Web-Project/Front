@@ -1,8 +1,10 @@
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useCallback } from "react";
 import { getProject, projectImage } from "../api/projects";
 import { ApiError } from "../api/http";
 import { useApiQuery } from "../hooks/useApiQuery";
+import ProjectImage from "../components/ProjectImage";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -31,6 +33,7 @@ export default function ProjectDetail() {
 
   return (
     <div className="mx-auto max-w-5xl p-10">
+      <Link to={`/Project?generation=${project.generation}`} className="mb-6 inline-block text-[#014BAA] underline">프로젝트 목록으로</Link>
 
       {/* 프로젝트 제목 */}
       <div className="mb-10">
@@ -50,11 +53,12 @@ export default function ProjectDetail() {
       </div>
 
       {/* 대표 배너 */}
-      {project.banner ? <img
-        src={projectImage(project.banner)}
+      <ProjectImage
+        src={project.banner ? projectImage(project.banner) : undefined}
         alt={project.title}
         className="mb-10 h-[350px] w-full rounded-2xl object-cover shadow-lg"
-      /> : <div aria-label="대표 이미지 없음" className="mb-10 h-[350px] w-full rounded-2xl bg-gray-100 shadow-lg" />}
+        placeholder="대표 이미지 없음"
+      />
 
       
 
@@ -65,13 +69,18 @@ export default function ProjectDetail() {
           프로젝트 설명
         </h2>
 
-        <p className="leading-8 text-gray-700">
+        <p className="whitespace-pre-wrap break-words leading-8 text-gray-700">
           {project.description}
         </p>
 
       </div>
 
       {/* 팀원 */}
+      {project.stacks.length > 0 && <section className="mt-8 rounded-2xl border p-6 shadow-sm">
+        <h2 className="mb-4 text-2xl font-bold text-[#014BAA]">기술 스택</h2>
+        <div className="flex flex-wrap gap-2">{project.stacks.map((stack, index) =>
+          <span key={index} className="rounded-full bg-blue-50 px-4 py-2 text-[#014BAA]">{stack}</span>)}</div>
+      </section>}
       <div className="mt-8 rounded-2xl border p-6 shadow-sm">
 
         <h2 className="mb-5 text-2xl font-bold text-[#014BAA]">

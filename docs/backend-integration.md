@@ -4,6 +4,8 @@
 
 - 프로젝트 목록: `GET /api/projects?generation=1&page=0&size=12`.
 - 프로젝트 상세: `GET /api/projects/{projectId}`.
+- 관리자 프로젝트 등록: `POST /api/projects`. 목록의 `+ 프로젝트 등록`에서 `/Projectup` 폼으로 이동하고, 성공하면 생성된 상세 화면으로 이동한다.
+- 관리자 이미지 업로드: `POST /api/projects/images` (`multipart/form-data`, `file`). 반환된 `url`을 프로젝트의 `logo`, `banner`에 저장하며 이미지 조회는 공개다.
 - 가입 신청 제출: `POST /api/join-applications`.
 - 팀의 최신 회원가입·JWT 로그인·내 정보 조회·게시판·people 코드를 보존하고 확인된 API의 주소를 `VITE_API_BASE_URL`로 통일했다.
 - 프로젝트 카드·상세 UI와 기수 필터를 유지하며 로딩, 오류·재시도, 빈 목록, 상세 404, 페이지 이동을 처리했다. 기수·페이지·상세 ID 변경 시 이전 요청을 취소한다.
@@ -21,7 +23,7 @@
 | `src/api/member.ts`, `src/context/AuthContext.tsx`, `src/context/auth.ts`, `src/page/SignIn.tsx` | 팀 JWT 로그인·localStorage 토큰·내 정보 복원 유지, 인증 모듈 충돌 해결 |
 | `src/api/post.ts`, `src/page/NoticeWrite.tsx` | 게시글 작성에 팀의 토큰 첨부. 작성자는 백엔드 인증 회원 기준이므로 화면에도 로그인 이름 표시 |
 | `src/page/Home.tsx` | 팀 people 화면 보존, 하드코딩 주소 제거, 초기 조회 취소 처리 |
-| `.env.example`, `netlify.toml`, `README.md` | 설정 예제·`/api` 프록시·SPA 새로고침 처리·문서 링크 |
+| `.env.example`, `netlify.toml`, `public/_redirects`, `README.md` | 설정 예제·빌드 명령·`/api` 프록시·SPA 새로고침 처리·문서 링크 |
 | `vite.config.ts` | 로컬 개발용 `/api` 프록시 |
 | `src/page/Schedule.tsx` | 하드코딩 주소를 공통 `apiUrl`로 교체 |
 | `tests/project-api.test.mjs` | DTO·설정·오류·이미지·JWT 헤더 검증 |
@@ -67,13 +69,17 @@ Back의 local 프로필은 인메모리 H2이며 초기 프로젝트 데이터�
 
 Back은 EC2(`http://32.236.133.40`)에서 HTTP로 실행된다. 브라우저가 HTTPS 사이트에서 HTTP 서버를 직접 부르면 Mixed Content로 막히므로, Netlify 서버가 대신 요청을 전달하는 프록시를 쓴다.
 
-1. `netlify.toml`의 `/api/*` 규칙이 `/api/`로 시작하는 요청을 `http://32.236.133.40/api/:splat`으로 전달한다(`force = true`). 이 규칙은 SPA fallback(`/*` → `/index.html`)보다 위에 있어야 한다.
-2. Netlify 프로젝트 환경변수에 `VITE_API_BASE_URL`을 **설정하지 않는다**. 이미 있으면 삭제한다. 값이 있으면 프록시를 거치지 않고 그 주소로 직접 요청하며, `http://` 주소는 HTTPS 오류가 난다.
-3. 기존 설정은 `npm run build`, publish `dist`, Node 24이다.
+1. 리다이렉트 규칙은 `public/_redirects` 한 곳에서 관리한다(빌드 시 `dist/_redirects`로 복사). Netlify는 `_redirects`를 `netlify.toml`보다 먼저 적용하므로 두 파일에 나눠 두지 않는다.
+   - `/api/*  http://32.236.133.40/api/:splat  200!`: `/api/`로 시작하는 요청을 EC2로 전달한다. `!`는 강제 적용이다.
+   - `/*  /index.html  200`: `/Project`·상세 주소의 직접 접속·새로고침을 SPA로 연결한다. 규칙은 위에서부터 적용되므로 반드시 `/api/*` 아래에 둔다.
+2. Netlify 프로젝트 환경변수에 `VITE_API_BASE_URL`을 **설정하지 않는다**. 이미 있으면 삭제한다. 값이 있으면 프록시를 거치지 않고 그 주소로 직접 요청한다.
+3. 빌드 명령은 `npm run build:netlify`, publish `dist`, Node 24이다. 이 명령은 `scripts/check-production-config.mjs`로 `VITE_API_BASE_URL`을 먼저 검사한다. 비어 있으면 상대 경로(프록시)로 통과하고, HTTP 주소·localhost 주소는 빌드 단계에서 차단한다. 직접 `dist`를 업로드하는 경우에도 같은 명령으로 빌드한다.
 4. 환경변수는 빌드 때 반영되므로 변경 후 새 빌드·배포가 필요하다.
 5. 배포 후 `https://cornerroom.netlify.app/api/projects` 같은 GET 주소에서 JSON이 보이면 프록시가 동작하는 것이다.
 
-EC2 주소가 바뀌면 `netlify.toml`의 `to` 주소를 함께 바꾼다. `VITE_` 값은 브라우저에 공개되므로 JWT 비밀키, 비밀번호, DB 접속정보를 넣지 않는다.
+프로젝트 카드와 상세의 이미지 요청이 실패하면 빈 이미지 영역을 표시하고 제목·설명·상세 링크는 유지한다. 2026-11-20 로컬 브라우저에서 일회성 모의 API로 목록·상세 이동, 이미지 404 처리, 기수별 빈 목록, 서버 500 오류 안내를 확인했다. 이는 실제 운영 API·DB 연결 검증을 대신하지 않는다.
+
+EC2 주소가 바뀌면 `public/_redirects`의 `/api/*` 대상 주소를 함께 바꾼다. `VITE_` 값은 브라우저에 공개되므로 JWT 비밀키, 비밀번호, DB 접속정보를 넣지 않는다.
 
 Back CORS는 `http://localhost:5173`, `https://cornerroom.netlify.app`을 허용한다. 프록시를 거쳐도 브라우저가 붙인 `Origin: https://cornerroom.netlify.app` 헤더가 Back까지 전달되므로 이 허용 목록이 필요하다. 기존 people 수정 API에 맞춰 PATCH 사전 요청도 허용하되 실제 API의 ADMIN 검증은 유지한다. Netlify preview 도메인은 현재 허용되지 않는다.
 
@@ -85,7 +91,7 @@ Back CORS는 `http://localhost:5173`, `https://cornerroom.netlify.app`을 허용
 - GitHub 배포 이력 0건, Actions 워크플로 0건, 저장소 운영 URL 없음. 이 사실만으로 외부 수동 배포 여부는 단정할 수 없다.
 - 운영에는 서버 측 `SPRING_PROFILES_ACTIVE=prod`, `SPRING_DATASOURCE_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET` 설정과 MySQL 스키마가 필요하다. prod의 `ddl-auto: validate`에 맞춰 테이블을 준비해야 한다.
 - 가입 신청 조회·심사·삭제 권한은 현재 팀의 기존 공개 정책을 유지한다. 이 화면에는 제출만 연결하며 관리 기능을 새로 노출하지 않는다. 운영 전 관리 권한 정책 확정이 필요하다.
-- 일정 화면의 `/api/calendar` 호출은 공통 `apiUrl`로 바꿨지만 현재 백엔드에 대응 API가 없어 데이터는 받지 못한다. 프로젝트 등록·이미지 업로드도 이번 범위가 아니다.
+- 일정 화면의 `/api/calendar` 호출은 공통 `apiUrl`로 바꿨지만 현재 백엔드에 대응 API가 없어 데이터는 받지 못한다.
 - Netlify 프록시를 통한 운영 연동과 브라우저 UI 시각 검증은 완료되지 않았다.
 
 ## 검증
@@ -93,6 +99,7 @@ Back CORS는 `http://localhost:5173`, `https://cornerroom.netlify.app`을 허용
 ```powershell
 # Front
 node --test tests/project-api.test.mjs
+node --test tests/project-write.test.mjs
 npm run build
 npm run lint
 # Back
@@ -104,3 +111,11 @@ npm run lint
 2026-10-18 결과: 프론트 테스트 5개·빌드·린트 통과, 백엔드 전체 테스트 49개·`bootJar` 통과. Java 21/local 프로필의 일회성 H2 서버에서 프론트 API 모듈을 실제 호출해 프로젝트 목록·404, 회원가입·로그인·내 정보, JWT 게시글 작성·조회, 가입 신청 제출, PATCH 사전 요청과 일반 회원의 ADMIN 요청 403을 확인했다. 검증 서버는 종료했다.
 
 실제 HTTP 검사를 재현하려면 운영 데이터가 없는 별도 local 프로필 서버를 실행한 뒤 `SMOKE_API_BASE_URL`을 그 로컬 HTTP 주소로 지정하고 `node tests/local-api-smoke.mjs`를 실행한다. 테스트는 일반 회원·게시글·가입 신청을 생성하므로 일회성 H2에서만 실행한다. 관리자 계정을 만들거나 권한을 우회하지 않는다.
+
+## 프로젝트 등록 사용법
+
+ADMIN 계정으로 로그인 → 프로젝트 목록 → `+ 프로젝트 등록` → 기수·이름·상세 설명 입력 → 등록. 한 줄 설명·기술 스택·팀원·로고·배너는 선택 항목이다. 기술 스택은 쉼표로 구분한다. 입력 오류나 서버 오류 시 입력값을 유지하며, 등록 중에는 중복 제출을 막는다. 일반 회원은 등록 폼을 사용할 수 없고 서버에서도 403으로 차단한다.
+
+이미지는 실제 PNG/JPEG만 허용하며 파일당 5MB, 1600만 화소 이하이다. 서버는 파일 내용을 검증하고 UUID 이름의 PNG로 다시 저장한다. Back의 기본 저장 경로는 `./uploads/projects`이고, `--app.project-image-directory=/absolute/persistent/path`로 변경할 수 있다. 배포 환경에서는 이 경로를 영속 볼륨에 연결해야 한다. DB에는 파일 경로가 저장된다. 업로드 후 등록을 취소한 이미지의 자동 정리는 아직 제공하지 않는다.
+
+2026-11-05: 프론트 린트·빌드·API 테스트, 백엔드 전체 테스트, 브라우저의 관리자 로그인 → 이미지 첨부 → 등록 → 상세·목록 표시를 확인했다. 로컬 H2용 테스트 계정은 실행 중인 DB에만 생성했으며 소스에 관리자 자동 생성 코드는 추가하지 않았다.

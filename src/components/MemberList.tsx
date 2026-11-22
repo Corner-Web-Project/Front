@@ -59,6 +59,7 @@ export default function MemberList({
         <button
           type="button"
           onClick={addMember}
+          disabled={members.length >= 100}
           className="rounded-lg bg-[#014BAA] px-4 py-2 text-white"
         >
           + 팀원 추가
@@ -76,6 +77,8 @@ export default function MemberList({
           >
 
             <Input
+              aria-label={`팀원 ${index + 1} 역할`}
+              maxLength={100}
               value={member.role}
               placeholder="역할"
               onChange={(e) =>
@@ -89,6 +92,8 @@ export default function MemberList({
             />
 
             <Input
+              aria-label={`팀원 ${index + 1} 이름`}
+              maxLength={50}
               value={member.name}
               placeholder="이름"
               onChange={(e) =>

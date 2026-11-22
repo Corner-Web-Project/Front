@@ -17,6 +17,9 @@ export default function Description({
       </label>
 
       <textarea
+        aria-label="프로젝트 상세 설명"
+        required
+        maxLength={100000}
         rows={6}
         value={projectup.description}
         placeholder="프로젝트에 대해 자세히 설명해주세요."

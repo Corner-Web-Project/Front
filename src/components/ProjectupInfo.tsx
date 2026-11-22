@@ -19,6 +19,9 @@ export default function ProjectupInfo({
         </label>
 
         <Input
+          aria-label="프로젝트 이름"
+          required
+          maxLength={200}
           value={projectup.title}
           placeholder="프로젝트 이름"
           onChange={(e) =>
@@ -37,6 +40,8 @@ export default function ProjectupInfo({
         </label>
 
         <Input
+          aria-label="한 줄 설명"
+          maxLength={300}
           value={projectup.subtitle}
           placeholder="프로젝트를 한 줄로 소개해주세요."
           onChange={(e) =>

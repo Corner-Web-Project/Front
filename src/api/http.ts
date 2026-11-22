@@ -27,6 +27,10 @@ export function apiBaseUrl(value: string | undefined, production: boolean): stri
   if (production && url.protocol !== 'https:') {
     throw new Error("운영 백엔드 주소는 HTTPS여야 합니다.");
   }
+  if (production && (url.hostname === 'localhost' || url.hostname.endsWith('.localhost')
+    || /^127\./.test(url.hostname) || url.hostname === '[::1]' || url.hostname === '0.0.0.0')) {
+    throw new Error("운영 백엔드 주소에 로컬 주소를 사용할 수 없습니다.");
+  }
   return url.href.replace(/\/+$/, '');
 }
 
