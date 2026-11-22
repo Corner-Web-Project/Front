@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import { apiUrl } from "../api/config";
 
 import "../css/schedule.css";
 
@@ -17,7 +18,7 @@ export default function Schedule() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/calendar")
+        fetch(apiUrl("/api/calendar"))
             .then((res) => res.json())
             .then((data) => {
                 console.log("Notion 데이터:", data);

@@ -5,7 +5,4 @@
 [build.environment]
   NODE_VERSION = "24"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Redirect/proxy rules live in public/_redirects (applied before this file).

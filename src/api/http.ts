@@ -13,7 +13,8 @@ export function bearerAuthHeader(accessToken: string | null): { Authorization: s
 }
 
 export function apiBaseUrl(value: string | undefined, production: boolean): string {
-  if (!value?.trim()) throw new Error("VITE_API_BASE_URL이 설정되지 않았습니다.");
+  // 비어 있으면 같은 출처의 /api/... 상대 경로로 요청 (Netlify 프록시, Vite server.proxy)
+  if (!value?.trim()) return '';
   let url: URL;
   try {
     url = new URL(value.trim());
@@ -55,7 +56,7 @@ export async function getJson<T>(baseUrl: string, path: string, signal: AbortSig
 export function projectImageUrl(value: string | null, baseUrl: string): string | undefined {
   if (!value) return undefined;
   try {
-    const url = new URL(value, `${baseUrl}/`);
+    const url = new URL(value, `${baseUrl || globalThis.location?.origin}/`);
     return ['http:', 'https:'].includes(url.protocol) ? url.href : undefined;
   } catch {
     return undefined;
