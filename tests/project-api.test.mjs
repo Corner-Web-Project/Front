@@ -24,9 +24,10 @@ test('DTO contract accepts nullable fields and empty data, rejects old hardcoded
   assert.throws(() => parseProjectDetail({ ...detail, members: null }));
 });
 
-test('configuration requires an explicit URL and HTTPS in production', () => {
+test('configuration falls back to relative paths and requires HTTPS for explicit production URLs', () => {
   assert.equal(apiBaseUrl('http://localhost:8080/', false), 'http://localhost:8080');
-  assert.throws(() => apiBaseUrl(undefined, true));
+  assert.equal(apiBaseUrl(undefined, true), '');
+  assert.equal(apiBaseUrl('  ', false), '');
   assert.throws(() => apiBaseUrl('http://localhost:8080', true));
   assert.throws(() => apiBaseUrl('https://user:password@example.invalid', true));
 });
