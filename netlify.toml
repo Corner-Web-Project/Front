@@ -5,13 +5,4 @@
 [build.environment]
   NODE_VERSION = "24"
 
-[[redirects]]
-  from = "/api/*"
-  to = "http://32.236.133.40/api/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Redirect/proxy rules live in public/_redirects (applied before this file).
